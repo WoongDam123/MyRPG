@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_tbgi4"]
 [ext_resource type="TileSet" path="res://assets/tiles/tileset.tres" id="2_tefeu"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_o6xl0"]
+[ext_resource type="PackedScene" path="res://scenes/slime.tscn" id="6_slime"]
 [ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="5_85g3d"]
 
 [node name="Main" type="Node2D" unique_id=686725555]
@@ -22,5 +23,35 @@ tile_set = ExtResource("2_tefeu")
 
 [node name="Player" type="CharacterBody2D" parent="World" unique_id=488772171 instance=ExtResource("3_o6xl0")]
 position = Vector2(456, 348)
+
+[node name="Slime1" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(312, 556)
+
+[node name="Slime2" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(744, 556)
+
+[node name="Slime3" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(824, 76)
+
+[node name="Slime4" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(776, 348)
+
+[node name="Slime5" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(616, 492)
+
+[node name="Slime6" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(88, 364)
+
+[node name="Slime7" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(344, 188)
+
+[node name="Slime8" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(488, 140)
+
+[node name="Slime9" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(888, 476)
+
+[node name="Slime10" parent="World" instance=ExtResource("6_slime")]
+position = Vector2(664, 268)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1095583930 instance=ExtResource("5_85g3d")]

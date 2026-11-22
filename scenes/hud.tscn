@@ -54,3 +54,14 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 10
 text = "이동: 조이스틱(화면 왼쪽 드래그) / 방향키·WASD   공격: 칼 버튼 / Space·J"
+
+[node name="HPLabel" type="Label" parent="."]
+offset_left = 8.0
+offset_top = 18.0
+offset_right = 200.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(1, 0.55, 0.55, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "HP 5 / 5"
