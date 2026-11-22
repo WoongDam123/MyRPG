@@ -14,6 +14,7 @@ var _stats: Label
 var _detail_name: Label
 var _detail_desc: Label
 var _action: Button
+var _action2: Button  ## 소모품: 퀵슬롯 등록
 
 
 func _ready() -> void:
@@ -106,6 +107,15 @@ func _ready() -> void:
 	_action.visible = false
 	_action.pressed.connect(_on_action)
 	detail.add_child(_action)
+	_action2 = Button.new()
+	_action2.custom_minimum_size = Vector2(90, 30)
+	_action2.add_theme_font_size_override("font_size", 11)
+	_action2.text = "퀵슬롯 등록"
+	_action2.visible = false
+	_action2.pressed.connect(func():
+		GameState.set_quickslot(_selected.id)
+		_refresh())
+	detail.add_child(_action2)
 
 	GameState.inventory_changed.connect(_refresh)
 
@@ -174,7 +184,7 @@ func _refresh() -> void:
 		b.icon = GameState.get_icon(id) if id != "" else null
 		l.text = "%s\n%s" % [GameState.SLOT_NAMES[slot], GameState.ITEMS[id].name if id != "" else "(비어 있음)"]
 		b.modulate = Color(1.3, 1.2, 0.8) if (not _selected.is_empty() and _selected.from == "equip" and _selected.slot == slot) else Color.WHITE
-	_stats.text = "공격력  %d\n최대 체력  %d" % [GameState.get_attack(), GameState.get_max_hp()]
+	_stats.text = "Lv %d\n공격력  %d\n최대 체력  %d" % [GameState.level, GameState.get_attack(), GameState.get_max_hp()]
 	# 가방 칸
 	var ids := _bag_ids()
 	for i in BAG_SLOTS:
@@ -194,6 +204,7 @@ func _refresh() -> void:
 		_detail_name.text = ""
 		_detail_desc.text = "아이템을 눌러 보세요."
 		_action.visible = false
+		_action2.visible = false
 		return
 	var item: Dictionary = GameState.ITEMS[_selected.id]
 	_detail_name.text = item.name
@@ -207,6 +218,8 @@ func _refresh() -> void:
 		_action.text = "사용"
 	else:
 		_action.visible = false
+	_action2.visible = item.type == "consumable" and _selected.from == "bag"
+	_action2.text = "퀵슬롯 ✓" if GameState.quickslot == _selected.id else "퀵슬롯 등록"
 
 
 func _slot_button() -> Button:

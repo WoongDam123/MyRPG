@@ -22,6 +22,13 @@ var knockback: Vector2 = Vector2.ZERO
 var is_dead: bool = false
 var coins: int = 0
 var _hit_this_swing: Array = []  ## 한 번 휘두를 때 같은 적을 두 번 때리지 않도록
+var cooldowns: Dictionary = {}  ## 스킬 id → 남은 재사용 대기 시간
+var _dash_time: float = 0.0
+var _dash_dir: Vector2 = Vector2.ZERO
+var guard_time: float = 0.0  ## 방패 막기 남은 시간 (이 동안 무적)
+
+const PROJECTILE := preload("res://scenes/projectile.tscn")
+const DIRS := {"down": Vector2.DOWN, "up": Vector2.UP, "left": Vector2.LEFT, "right": Vector2.RIGHT}
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var slash: Sprite2D = $Slash
@@ -29,6 +36,7 @@ var _hit_this_swing: Array = []  ## 한 번 휘두를 때 같은 적을 두 번 
 @onready var attack_shape: CollisionShape2D = $AttackHitbox/CollisionShape2D
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var autopilot: Node = $AutoPilot  ## 자동 사냥·자동 이동
+@onready var ring: Sprite2D = $Ring  ## 회전 베기·방패 효과
 
 ## 방향별 칼 휘두르기 위치와 회전 (발밑이 기준점, 몸 중심은 y = -8)
 const SLASH_POSE := {
@@ -42,7 +50,7 @@ const SLASH_POSE := {
 func _ready() -> void:
 	# 체력·코인은 맵을 옮겨도 유지되도록 GameState에 보관한다
 	max_hp = GameState.get_max_hp()
-	hp = GameState.player_hp if GameState.player_hp >= 0 else max_hp
+	hp = GameState.player_hp if GameState.player_hp >= 0 else max_hp  # -1, -2 = 가득
 	GameState.stats_changed.connect(_on_stats_changed)
 	coins = GameState.coins
 	add_to_group("player")
@@ -52,6 +60,19 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
+		return
+
+	for id in cooldowns.keys():
+		cooldowns[id] = maxf(cooldowns[id] - delta, 0.0)
+	if guard_time > 0.0:
+		guard_time -= delta
+		ring.visible = guard_time > 0.0
+		ring.modulate = Color(0.8, 0.9, 1.0, 0.5 + 0.3 * sin(guard_time * 20.0))
+	if _dash_time > 0.0:
+		# 돌진 중: 입력 무시하고 빠르게 이동
+		_dash_time -= delta
+		velocity = _dash_dir * 260.0
+		move_and_slide()
 		return
 
 	_check_enemy_contact()
@@ -65,6 +86,12 @@ func _physics_process(delta: float) -> void:
 		if manual != Vector2.ZERO:
 			autopilot.on_manual_input()  # 직접 조작하면 자동 이동은 멈춘다
 		_handle_action_button()
+		if Input.is_action_just_pressed("skill_1"):
+			use_skill(0)
+		if Input.is_action_just_pressed("skill_2"):
+			use_skill(1)
+		if Input.is_action_just_pressed("quickslot"):
+			use_quickslot()
 		var auto_dir: Vector2 = autopilot.get_move_dir(delta)
 		var auto_attack: Vector2 = autopilot.get_attack_dir()
 		if auto_attack != Vector2.ZERO and not is_attacking:
@@ -122,7 +149,9 @@ func face_toward(pos: Vector2) -> void:
 ## 장비가 바뀌어 최대 체력이 달라졌을 때
 func _on_stats_changed() -> void:
 	var new_max: int = GameState.get_max_hp()
-	if new_max > max_hp:
+	if GameState.player_hp == -2:
+		hp = new_max  # 레벨업·전직: 체력 가득
+	elif new_max > max_hp:
 		hp += new_max - max_hp  # 늘어난 만큼 바로 채워 준다
 	max_hp = new_max
 	hp = mini(hp, max_hp)
@@ -148,6 +177,70 @@ func use_item(id: String) -> bool:
 		heal(item.heal)
 	GameState.remove_item(id)
 	return true
+
+
+# ================= 스킬 =================
+
+## 스킬 버튼(슬롯 0, 1)을 눌렀을 때. 쓸 수 있으면 true
+func use_skill(slot: int) -> bool:
+	var id: String = GameState.active_skills()[slot]
+	if id == "" or cooldowns.get(id, 0.0) > 0.0 or is_attacking or is_dead or not controls_enabled:
+		return false
+	cooldowns[id] = GameState.SKILLS[id].cooldown
+	match id:
+		"dash":
+			_dash_dir = DIRS[facing]
+			_dash_time = 0.18
+		"shield_guard":
+			guard_time = 1.5
+			_push_enemies(44.0, 220.0, 0)
+		"whirlwind":
+			_push_enemies(34.0, 160.0, GameState.get_attack() * 2)
+			_ring_burst(Color(1, 0.85, 0.5))
+		"crystal_shot":
+			for angle in [-0.26, 0.0, 0.26]:
+				var p := PROJECTILE.instantiate()
+				p.direction = DIRS[facing].rotated(angle)
+				p.damage = GameState.get_attack()
+				p.global_position = global_position + Vector2(0, -8) + DIRS[facing] * 6.0
+				get_parent().add_child(p)
+	return true
+
+
+func get_cooldown_ratio(id: String) -> float:
+	if id == "" or not GameState.SKILLS.has(id):
+		return 0.0
+	return cooldowns.get(id, 0.0) / GameState.SKILLS[id].cooldown
+
+
+## 주변 적을 밀쳐내고(필요하면 피해도 준다)
+func _push_enemies(radius: float, force: float, dmg: int) -> void:
+	for e in get_tree().get_nodes_in_group("enemies"):
+		var d: Vector2 = e.global_position - global_position
+		if d.length() < radius:
+			if dmg > 0:
+				e.take_damage(dmg, global_position)
+			else:
+				e.knockback = d.normalized() * force
+
+
+func _ring_burst(color: Color) -> void:
+	ring.visible = true
+	ring.modulate = color
+	ring.scale = Vector2(0.3, 0.3)
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(ring, "scale", Vector2(1.4, 1.4), 0.25)
+	tw.tween_property(ring, "modulate:a", 0.0, 0.3)
+	await tw.finished
+	if guard_time <= 0.0:
+		ring.visible = false
+
+
+## 퀵슬롯에 등록한 물약 사용
+func use_quickslot() -> bool:
+	if GameState.quickslot == "":
+		return false
+	return use_item(GameState.quickslot)
 
 
 ## 대화·화면 전환 중에는 조작을 끈다
@@ -206,7 +299,7 @@ func _on_attack_hit(body: Node2D) -> void:
 
 ## 몸(Hurtbox)에 적이 닿아 있으면 피해를 받는다
 func _check_enemy_contact() -> void:
-	if invincible > 0.0:
+	if invincible > 0.0 or guard_time > 0.0:
 		return
 	for body in hurtbox.get_overlapping_bodies():
 		if body.is_in_group("enemies"):
@@ -215,7 +308,7 @@ func _check_enemy_contact() -> void:
 
 
 func take_damage(amount: int, from_position: Vector2) -> void:
-	if is_dead or invincible > 0.0:
+	if is_dead or invincible > 0.0 or guard_time > 0.0 or _dash_time > 0.0:
 		return
 	hp = max(hp - amount, 0)
 	GameState.player_hp = hp

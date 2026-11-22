@@ -31,27 +31,72 @@ signal inventory_changed  ## 가방·장비가 바뀌었을 때
 signal stats_changed  ## 공격력·최대 체력이 바뀌었을 때
 signal item_obtained(item_id: String, count: int)  ## 아이템을 얻었을 때 (화면 알림용)
 signal quest_changed  ## 퀘스트가 시작·완료됐을 때
+signal exp_changed  ## 경험치·레벨이 바뀌었을 때
+signal leveled_up(new_level: int)
+signal skills_changed  ## 스킬을 배웠거나 직업이 바뀌었을 때
+signal quickslot_changed
 
 ## 아이템 목록. icon = item_icons.png의 몇 번째 칸인지
 ## type: weapon(무기) / armor(방어구) / accessory(장신구) / consumable(소모품) / material(재료)
 const ITEMS := {
-	"wooden_sword": {"name": "낡은 목검", "type": "weapon", "icon": 0, "atk": 1,
+	"wooden_sword": {"name": "낡은 목검", "type": "weapon", "icon": 0, "atk": 1, "price": 8,
 		"desc": "아빠가 젊은 시절 쓰던 목검. 낡았지만 손에 잘 맞는다.\n공격력 +1"},
-	"leather_armor": {"name": "가죽옷", "type": "armor", "icon": 1, "hp": 1,
+	"leather_armor": {"name": "가죽옷", "type": "armor", "icon": 1, "hp": 1, "price": 8,
 		"desc": "튼튼하게 무두질한 가죽옷. 한 대쯤은 더 버틸 수 있을 것 같다.\n최대 체력 +1"},
-	"potion": {"name": "회복 물약", "type": "consumable", "icon": 2, "heal": 2,
+	"potion": {"name": "회복 물약", "type": "consumable", "icon": 2, "heal": 2, "price": 5,
 		"desc": "마시면 체력을 2 회복한다."},
-	"herb": {"name": "약초", "type": "material", "icon": 3,
+	"herb": {"name": "약초", "type": "material", "icon": 3, "price": 4,
 		"desc": "자갈 마을 근처에서 자라는 약초. 물약의 재료가 된다."},
+	"mine_key": {"name": "녹슨 광산 열쇠", "type": "key", "icon": 4,
+		"desc": "버려진 광산 깊은 곳의 문을 여는 열쇠."},
+	"earth_crystal": {"name": "대지의 결정", "type": "key", "icon": 5,
+		"desc": "킹슬라임이 품고 있던 따뜻한 결정. 손에 쥐면 대지의 맥박이 느껴진다."},
+	"adult_token": {"name": "자갈 마을의 증표", "type": "accessory", "icon": 6, "hp": 1, "atk": 1,
+		"desc": "성인식에서 촌장님께 받은 증표. 마을 사람들의 바람이 담겨 있다.\n공격력 +1, 최대 체력 +1"},
 }
+
+## 상점에서 파는 물건과 가격
+const SHOP_STOCK := {"potion": 10, "herb": 6}
 
 const SLOT_NAMES := {"weapon": "무기", "armor": "방어구", "accessory": "장신구"}
 
 ## 퀘스트(심부름) 목록
 const QUESTS := {
-	"errand_equip": {"title": "아빠의 부탁 ① 장비 갖추기",
-		"goal": "창고 상자에서 장비를 꺼내 장착하고 아빠에게 돌아가기"},
+	"errand_equip": {"title": "아빠의 부탁 ① 장비 갖추기"},
+	"errand_shop": {"title": "엄마의 부탁 ② 물약 사 오기"},
+	"errand_quickslot": {"title": "엄마의 부탁 ③ 물약 챙기기"},
+	"coming_of_age": {"title": "성인식"},
+	"main_mine": {"title": "첫 임무: 버려진 광산"},
+	"job_trial": {"title": "전직의 시련"},
 }
+
+## 스킬. kind: active(버튼으로 쓰는 기술) / passive(배우면 항상 적용)
+const SKILLS := {
+	"dash": {"name": "돌진", "kind": "active", "icon": 0, "max": 1, "cooldown": 3.0, "job": "",
+		"desc": "바라보는 방향으로 재빠르게 돌진한다. 돌진하는 동안은 피해를 받지 않는다."},
+	"earth_blade": {"name": "대지 베기", "kind": "passive", "icon": 1, "max": 3, "atk": 1, "job": "",
+		"desc": "대지의 힘을 칼끝에 싣는다. 단계마다 공격력 +1"},
+	"stone_body": {"name": "단단한 몸", "kind": "passive", "icon": 2, "max": 3, "hp": 1, "job": "",
+		"desc": "몸을 바위처럼 단련한다. 단계마다 최대 체력 +1"},
+	"shield_guard": {"name": "방패 막기", "kind": "active", "icon": 3, "max": 1, "cooldown": 6.0, "job": "granite_knight",
+		"desc": "1.5초 동안 모든 피해를 막고, 주변의 적을 밀쳐낸다."},
+	"whirlwind": {"name": "회전 베기", "kind": "active", "icon": 4, "max": 1, "cooldown": 4.0, "job": "steel_fighter",
+		"desc": "몸을 크게 돌려 주변의 모든 적에게 공격력의 2배 피해를 준다."},
+	"crystal_shot": {"name": "수정 탄환", "kind": "active", "icon": 5, "max": 1, "cooldown": 2.5, "job": "quartz_mage",
+		"desc": "앞쪽으로 수정 탄환 3발을 부채꼴로 쏜다. 한 발마다 공격력만큼 피해."},
+}
+
+## 1차 직업 (Solid)
+const JOBS := {
+	"granite_knight": {"name": "화강 기사", "line": "수호", "skill": "shield_guard", "atk": 0, "hp": 3,
+		"desc": "화강암처럼 굳건한 방패의 기사.\n최대 체력 +3 · 스킬 「방패 막기」"},
+	"steel_fighter": {"name": "강철 투사", "line": "파쇄", "skill": "whirlwind", "atk": 2, "hp": 0,
+		"desc": "강철 같은 힘으로 모든 것을 부수는 투사.\n공격력 +2 · 스킬 「회전 베기」"},
+	"quartz_mage": {"name": "석영 술사", "line": "결정", "skill": "crystal_shot", "atk": 1, "hp": 1,
+		"desc": "대지의 결정을 다루는 술사.\n공격력 +1 · 최대 체력 +1 · 스킬 「수정 탄환」"},
+}
+const JOB_LEVEL := 10  ## 1차 전직 레벨
+const BOSS_LEVEL := 5  ## 광산 깊은 곳(킹슬라임)에 들어갈 수 있는 레벨
 
 const BASE_ATTACK := 1  ## 맨손 공격력
 const BASE_MAX_HP := 5
@@ -65,6 +110,12 @@ var coins: int = 0
 var inventory: Dictionary = {}  ## 아이템 id → 개수
 var equipment: Dictionary = {"weapon": "", "armor": "", "accessory": ""}  ## 장착 중인 아이템 id
 var quests: Dictionary = {}  ## 퀘스트 id → "active" / "done"
+var level: int = 1
+var exp_points: int = 0
+var skill_points: int = 0
+var skills: Dictionary = {}  ## 스킬 id → 배운 단계
+var job: String = ""  ## 1차 직업 id ("" = 견습 용사)
+var quickslot: String = ""  ## 퀵슬롯에 등록한 소모품 id
 
 # --- 맵 이동 ---
 var next_spawn: String = ""  ## 다음 맵에서 플레이어가 나타날 위치 이름 (포탈 id 또는 Spawns의 Marker2D 이름)
@@ -123,20 +174,94 @@ func _after_equipment_change() -> void:
 	stats_changed.emit()
 
 
+## 공격력 = 기본 + 레벨(2레벨마다 +1) + 장비 + 패시브 스킬 + 직업
 func get_attack() -> int:
-	var atk := BASE_ATTACK
+	var atk := BASE_ATTACK + (level - 1) / 2
 	for slot in equipment:
 		if equipment[slot] != "":
 			atk += ITEMS[equipment[slot]].get("atk", 0)
+	for id in skills:
+		atk += SKILLS[id].get("atk", 0) * skills[id]
+	if job != "":
+		atk += JOBS[job].atk
 	return atk
 
 
+## 최대 체력 = 기본 + 레벨(3레벨마다 +1) + 장비 + 패시브 스킬 + 직업
 func get_max_hp() -> int:
-	var hp := BASE_MAX_HP
+	var hp := BASE_MAX_HP + (level - 1) / 3
 	for slot in equipment:
 		if equipment[slot] != "":
 			hp += ITEMS[equipment[slot]].get("hp", 0)
+	for id in skills:
+		hp += SKILLS[id].get("hp", 0) * skills[id]
+	if job != "":
+		hp += JOBS[job].hp
 	return hp
+
+
+# ================= 레벨·경험치 =================
+
+## 다음 레벨까지 필요한 경험치
+func exp_to_next() -> int:
+	return 10 * level + 5
+
+
+func add_exp(amount: int) -> void:
+	exp_points += amount
+	while exp_points >= exp_to_next():
+		exp_points -= exp_to_next()
+		level += 1
+		skill_points += 1
+		player_hp = -2  # 레벨업하면 체력을 가득 채운다 (player가 처리)
+		leveled_up.emit(level)
+		stats_changed.emit()
+	exp_changed.emit()
+
+
+# ================= 스킬 =================
+
+func skill_level(id: String) -> int:
+	return skills.get(id, 0)
+
+
+func can_learn(id: String) -> bool:
+	var sk: Dictionary = SKILLS[id]
+	if sk.job != "" and sk.job != job:
+		return false
+	return skill_points > 0 and skill_level(id) < sk.max
+
+
+func learn_skill(id: String) -> void:
+	if not can_learn(id):
+		return
+	skill_points -= 1
+	skills[id] = skill_level(id) + 1
+	skills_changed.emit()
+	stats_changed.emit()
+
+
+## 버튼으로 쓰는 스킬 목록 [슬롯1, 슬롯2]
+func active_skills() -> Array:
+	var list := ["", ""]
+	if skill_level("dash") > 0:
+		list[0] = "dash"
+	if job != "":
+		list[1] = JOBS[job].skill
+	return list
+
+
+func set_job(id: String) -> void:
+	job = id
+	skills[JOBS[id].skill] = 1  # 직업 스킬은 전직하면 바로 배운다
+	player_hp = -2
+	skills_changed.emit()
+	stats_changed.emit()
+
+
+func set_quickslot(id: String) -> void:
+	quickslot = id
+	quickslot_changed.emit()
 
 
 ## item_icons.png에서 아이콘 한 칸을 잘라 준다

@@ -64,4 +64,20 @@ target_portal = "forest_exit"
 label_text = "자갈 마을"
 spawn_offset = Vector2(26, 0)
 
+[node name="Portal_mine_entrance" parent="World" instance=ExtResource("7_portal")]
+position = Vector2(920, 350)
+portal_id = "mine_entrance"
+target_map = "res://scenes/maps/mine.tscn"
+target_portal = "mine_out"
+label_text = "버려진 광산"
+spawn_offset = Vector2(-26, 0)
+
+[node name="Portal_altar_path" parent="World" instance=ExtResource("7_portal")]
+position = Vector2(480, 42)
+portal_id = "altar_path"
+target_map = "res://scenes/maps/altar.tscn"
+target_portal = "altar_out"
+label_text = "대지의 제단"
+spawn_offset = Vector2(0, 26)
+
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1095583930 instance=ExtResource("5_85g3d")]

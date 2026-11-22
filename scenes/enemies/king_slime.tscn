@@ -1,0 +1,31 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/slime.tscn" id="1_base"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/king_slime_frames.tres" id="2_frames"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(26, 12)
+
+[node name="KingSlime" instance=ExtResource("1_base")]
+display_name = "킹슬라임"
+max_hp = 60
+speed = 26.0
+chase_range = 220.0
+damage = 2
+exp_reward = 80
+coin_chance = 0.0
+heart_chance = 1.0
+respawn_time = 0.0
+is_boss = true
+dash_interval = 2.8
+dash_speed = 180.0
+drop_item = "earth_crystal"
+defeat_flag = "king_slime_defeated"
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+position = Vector2(0, -16)
+sprite_frames = ExtResource("2_frames")
+
+[node name="CollisionShape2D" parent="." index="1"]
+position = Vector2(0, -6)
+shape = SubResource("RectangleShape2D_body")

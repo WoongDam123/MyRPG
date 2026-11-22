@@ -1,7 +1,7 @@
 extends SceneTree
-# 자갈 마을(village.tscn)과 우리 집(house.tscn) 맵 생성기.
+# 맵 생성기: 우리 집, 자갈 마을, 창고, 잡화점, 버려진 광산, 광산 깊은 곳, 대지의 제단
 # ⚠️ 다시 실행하면 두 맵 파일을 덮어쓴다. 에디터에서 직접 고친 뒤에는 실행하지 말 것.
-enum { GRASS, GRASS2, FLOWER, PATH, WATER, TREE, ROCK, BUSH, FENCE_H, FLOOR, WALL_TOP, WALL, SOIL, GRAVEL, FENCE_V }
+enum { GRASS, GRASS2, FLOWER, PATH, WATER, TREE, ROCK, BUSH, FENCE_H, FLOOR, WALL_TOP, WALL, SOIL, GRAVEL, FENCE_V, CAVE_FLOOR, CAVE_WALL }
 var TS: TileSet
 var rng := RandomNumberGenerator.new()
 
@@ -12,6 +12,10 @@ func _init():
 	build_house()
 	build_village()
 	build_barn()
+	build_shop()
+	build_mine()
+	build_mine_boss()
+	build_altar()
 	quit()
 
 # ---------- 공통 도우미 ----------
@@ -52,12 +56,32 @@ func npc(m: Dictionary, pname: String, display: String, tex: String, pos: Vector
 	n.npc_name = display; n.texture = load(tex); n.facing = facing; n.lines = lines; n.story_id = story_id
 	add(m.world, n, m.root)
 
-func portal(m: Dictionary, id: String, pos: Vector2, target_map: String, target_portal: String, label: String, offset: Vector2) -> void:
+func portal(m: Dictionary, id: String, pos: Vector2, target_map: String, target_portal: String, label: String, offset: Vector2, lock := {}) -> void:
 	var p: Node2D = load("res://scenes/portal.tscn").instantiate()
 	p.name = "Portal_" + id; p.position = pos
 	p.portal_id = id; p.target_map = target_map; p.target_portal = target_portal
 	p.label_text = label; p.spawn_offset = offset
+	p.required_flag = lock.get("flag", ""); p.required_item = lock.get("item", ""); p.required_level = lock.get("level", 0)
+	if lock.has("text"): p.locked_text = lock.text
 	add(m.world, p, m.root)
+
+func enemy(m: Dictionary, scene: String, pos: Vector2, pname := "") -> void:
+	var e: Node2D = load(scene).instantiate()
+	if pname != "": e.name = pname
+	e.position = pos
+	add(m.world, e, m.root)
+
+func chest_at(m: Dictionary, pname: String, pos: Vector2, id: String, items: Array[String], quest := "", locked := "", after: Array[String] = []) -> void:
+	var c: Node2D = load("res://scenes/chest.tscn").instantiate()
+	c.name = pname; c.position = pos
+	c.chest_id = id; c.items = items; c.required_quest = quest
+	if locked != "": c.locked_text = locked
+	c.after_text = after
+	add(m.world, c, m.root)
+
+func tint(m: Dictionary, color: Color) -> void:
+	var cm := CanvasModulate.new(); cm.name = "Darkness"; cm.color = color
+	add(m.root, cm, m.root)
 
 func marker(m: Dictionary, mname: String, pos: Vector2) -> void:
 	var mk := Marker2D.new(); mk.name = mname; mk.position = pos
@@ -179,14 +203,13 @@ func build_village() -> void:
 		"나도 빨리 어른이 돼서 바위 숲 너머로 가 보고 싶어.",
 		"아 참, 바위 숲엔 슬라임이 나오니까 조심해! 동쪽 큰길 끝의 포탈로 가면 돼.",
 	])
-	npc(m, "Shopkeeper", "잡화점 주인", "res://assets/npcs/dad.png", Vector2(584, 150), "down", [
-		"어서 오게! 자갈 마을 잡화점일세.",
-		"지금은 물건 정리 중이라… 조금만 기다려 주게나.",
-	])
+	npc(m, "Elder", "촌장", "res://assets/npcs/elder.png", Vector2(344, 200), "down", ["허허."], "elder")
 	# 포탈
 	portal(m, "home_door", Vector2(224, 138), "res://scenes/maps/house.tscn", "house_door", "우리 집", Vector2(0, 22))
 	portal(m, "barn_door", Vector2(320, 138), "res://scenes/maps/barn.tscn", "barn_out", "창고", Vector2(0, 22))
-	portal(m, "forest_exit", Vector2(744, 256), "res://scenes/maps/rock_forest.tscn", "village_exit", "바위 숲", Vector2(-26, 0))
+	portal(m, "shop_door", Vector2(544, 138), "res://scenes/maps/shop.tscn", "shop_out", "잡화점", Vector2(0, 22))
+	portal(m, "forest_exit", Vector2(744, 256), "res://scenes/maps/rock_forest.tscn", "village_exit", "바위 숲", Vector2(-26, 0),
+		{"flag": "adult", "text": "(아직 성인식을 치르지 않아서 마을 밖으로 나갈 수 없다.)"})
 	finish(m, Vector2(224, 164), "res://scenes/maps/village.tscn")
 
 # ---------- 창고 (실내, 12 x 8 타일) ----------
@@ -214,6 +237,97 @@ func build_barn() -> void:
 	add(m.world, chest, m.root)
 	portal(m, "barn_out", Vector2(96, 122), "res://scenes/maps/village.tscn", "barn_door", "", Vector2(0, -22))
 	finish(m, Vector2(96, 100), "res://scenes/maps/barn.tscn")
+
+
+# ---------- 잡화점 (실내, 14 x 9 타일) ----------
+func build_shop() -> void:
+	var m := new_map("잡화점", 2.0)
+	for y in 9:
+		for x in 14:
+			var t := FLOOR
+			if y == 0 or x == 0 or x == 13 or (y == 8 and not x in [6, 7]):
+				t = WALL_TOP
+			elif y == 1:
+				t = WALL
+			cell(m.ground, x, y, t)
+	prop(m, "Counter", "res://assets/props/counter.png", Vector2(112, 78), Vector2(48, 10))
+	prop(m, "Shelf", "res://assets/props/shelf.png", Vector2(36, 58), Vector2(20, 10))
+	prop(m, "Shelf2", "res://assets/props/shelf.png", Vector2(188, 58), Vector2(20, 10))
+	prop(m, "Crate", "res://assets/props/crate.png", Vector2(30, 120), Vector2(14, 10))
+	prop(m, "Plant", "res://assets/props/plant.png", Vector2(196, 122), Vector2(10, 6))
+	npc(m, "Shopkeeper", "잡화점 주인", "res://assets/npcs/dad.png", Vector2(112, 56), "down", ["어서 오게!"], "shopkeeper")
+	portal(m, "shop_out", Vector2(112, 136), "res://scenes/maps/village.tscn", "shop_door", "", Vector2(0, -24))
+	finish(m, Vector2(112, 110), "res://scenes/maps/shop.tscn")
+
+# ---------- 버려진 광산 (40 x 26 타일, 방 6개를 통로로 연결) ----------
+func build_mine() -> void:
+	var m := new_map("버려진 광산", 1.5)
+	var open := {}
+	var carve := func(r: Rect2i):
+		for y in range(r.position.y, r.end.y):
+			for x in range(r.position.x, r.end.x):
+				open[Vector2i(x, y)] = true
+	for r in [Rect2i(2, 17, 9, 7), Rect2i(14, 16, 9, 8), Rect2i(3, 3, 8, 7), Rect2i(14, 3, 11, 8), Rect2i(28, 3, 10, 10), Rect2i(28, 16, 10, 8),
+			Rect2i(10, 20, 5, 2), Rect2i(17, 10, 2, 7), Rect2i(10, 6, 5, 2), Rect2i(24, 6, 5, 2), Rect2i(22, 19, 7, 2), Rect2i(32, 12, 2, 5)]:
+		carve.call(r)
+	for y in 26:
+		for x in 40:
+			cell(m.ground, x, y, CAVE_FLOOR if open.has(Vector2i(x, y)) else CAVE_WALL)
+	for pos in [Vector2(56, 300), Vector2(150, 300), Vector2(400, 60)]:
+		prop(m, "Crate", "res://assets/props/crate.png", pos, Vector2(14, 10))
+	chest_at(m, "KeyChest", Vector2(104, 84), "mine_key", ["mine_key"] as Array[String], "main_mine", "(굳게 닫혀 있다.)",
+		["(광산 깊은 곳의 문을 여는 열쇠인 것 같다.)"] as Array[String])
+	chest_at(m, "PotionChest", Vector2(568, 364), "mine_potions", ["potion", "potion"] as Array[String])
+	var rs := "res://scenes/enemies/rock_slime.tscn"
+	var hs := "res://scenes/enemies/hard_slime.tscn"
+	for p in [Vector2(260, 300), Vector2(320, 340), Vector2(280, 100), Vector2(360, 140), Vector2(120, 130), Vector2(500, 300), Vector2(560, 290)]:
+		enemy(m, rs, p)
+	for p in [Vector2(500, 100), Vector2(560, 160), Vector2(520, 360), Vector2(330, 80)]:
+		enemy(m, hs, p)
+	portal(m, "mine_out", Vector2(40, 336), "res://scenes/maps/rock_forest.tscn", "mine_entrance", "바위 숲", Vector2(26, 0))
+	portal(m, "boss_door", Vector2(568, 58), "res://scenes/maps/mine_boss.tscn", "boss_out", "깊은 곳", Vector2(0, 26),
+		{"item": "mine_key", "level": 5, "text": "(녹슨 자물쇠로 잠긴 문이다. 열쇠가 필요하다.)"})
+	tint(m, Color(0.78, 0.74, 0.82))
+	finish(m, Vector2(70, 336), "res://scenes/maps/mine.tscn")
+
+# ---------- 광산 깊은 곳 (보스 방, 22 x 16 타일) ----------
+func build_mine_boss() -> void:
+	var m := new_map("광산 깊은 곳", 1.5)
+	for y in 16:
+		for x in 22:
+			var wall := y < 2 or x < 2 or x > 19 or y > 14
+			if (x in [2, 19] and y in [2, 3, 13, 14]) or (y == 2 and x in [3, 18]): wall = true
+			cell(m.ground, x, y, CAVE_WALL if wall else CAVE_FLOOR)
+	enemy(m, "res://scenes/enemies/king_slime.tscn", Vector2(176, 100), "KingSlime")
+	portal(m, "boss_out", Vector2(176, 226), "res://scenes/maps/mine.tscn", "boss_door", "광산", Vector2(0, -26))
+	tint(m, Color(0.72, 0.68, 0.78))
+	finish(m, Vector2(176, 200), "res://scenes/maps/mine_boss.tscn")
+
+# ---------- 대지의 제단 (24 x 18 타일) ----------
+func build_altar() -> void:
+	var m := new_map("대지의 제단", 1.5)
+	for y in 18:
+		for x in 24:
+			var t := GRASS2 if rng.randf() < 0.3 else GRASS
+			if Vector2(x - 11.5, (y - 8.5) * 1.3).length() < 7.5: t = GRAVEL
+			if x in [11, 12] and y >= 14: t = GRAVEL
+			cell(m.ground, x, y, t)
+			var edge: int = mini(mini(x, y), mini(23 - x, 17 - y))
+			if (edge < 2 and not (x in [11, 12] and y > 9)) or (edge == 2 and rng.randf() < 0.4 and not x in [11, 12]):
+				cell(m.obs, x, y, TREE)
+	for p in [Vector2(96, 72), Vector2(288, 72), Vector2(96, 216), Vector2(288, 216)]:
+		cell(m.obs, int(p.x / 16), int(p.y / 16), ROCK)
+	prop(m, "Altar", "res://assets/props/altar.png", Vector2(192, 92), Vector2(28, 12))
+	npc(m, "Spirit", "대지의 정령", "res://assets/npcs/spirit.png", Vector2(224, 100), "down", ["……"], "spirit")
+	var trial := Node2D.new(); trial.name = "Trial"
+	trial.set_script(load("res://scripts/trial.gd"))
+	add(m.world, trial, m.root)
+	for i in 6:
+		var mk := Marker2D.new(); mk.name = "Spawn%d" % i
+		mk.position = Vector2(192, 148) + Vector2.RIGHT.rotated(i * TAU / 6.0) * Vector2(90, 55)
+		add(trial, mk, m.root)
+	portal(m, "altar_out", Vector2(192, 262), "res://scenes/maps/rock_forest.tscn", "altar_path", "바위 숲", Vector2(0, -26))
+	finish(m, Vector2(192, 230), "res://scenes/maps/altar.tscn")
 
 
 func _far_from(dict: Dictionary, p: Vector2i, dist: int) -> bool:

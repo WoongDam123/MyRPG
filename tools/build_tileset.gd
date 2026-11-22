@@ -1,6 +1,6 @@
 extends SceneTree
-# 타일셋(.tres) 생성기: 타일 15종과 충돌 모양
-enum { GRASS, GRASS2, FLOWER, PATH, WATER, TREE, ROCK, BUSH, FENCE_H, FLOOR, WALL_TOP, WALL, SOIL, GRAVEL, FENCE_V }
+# 타일셋(.tres) 생성기: 타일 17종과 충돌 모양
+enum { GRASS, GRASS2, FLOWER, PATH, WATER, TREE, ROCK, BUSH, FENCE_H, FLOOR, WALL_TOP, WALL, SOIL, GRAVEL, FENCE_V, CAVE_FLOOR, CAVE_WALL }
 func _init():
 	var ts := TileSet.new()
 	ts.tile_size = Vector2i(16, 16)
@@ -10,11 +10,11 @@ func _init():
 	src.texture = load("res://assets/tiles/tiles.png")
 	src.texture_region_size = Vector2i(16, 16)
 	ts.add_source(src, 0)
-	for i in 15:
+	for i in 17:
 		src.create_tile(Vector2i(i, 0))
 	var full := PackedVector2Array([Vector2(-8, -8), Vector2(8, -8), Vector2(8, 8), Vector2(-8, 8)])
 	var shapes := {
-		WATER: full, WALL_TOP: full, WALL: full,
+		WATER: full, WALL_TOP: full, WALL: full, CAVE_WALL: full,
 		TREE: PackedVector2Array([Vector2(-4, 1), Vector2(4, 1), Vector2(4, 8), Vector2(-4, 8)]),
 		ROCK: PackedVector2Array([Vector2(-6, -2), Vector2(6, -2), Vector2(6, 6), Vector2(-6, 6)]),
 		BUSH: PackedVector2Array([Vector2(-6, -1), Vector2(6, -1), Vector2(6, 6), Vector2(-6, 6)]),

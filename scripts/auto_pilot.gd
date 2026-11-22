@@ -50,11 +50,32 @@ func start_quest_move() -> void:
 			stop_quest_move()
 			return
 	else:
+		if obj.target == "":
+			# 목표 맵에 도착: 자동 사냥 목표라면 자동 사냥을 켠다
+			stop_quest_move()
+			if obj.get("auto_hunt", false):
+				_enable_auto_hunt()
+			return
 		_quest_target = map.find_target(obj.target)
 		if _quest_target == null:
 			stop_quest_move()
 			return
+		if _quest_target.is_in_group("enemies"):
+			# 목표가 적(보스)이면 자동 사냥으로 싸운다
+			stop_quest_move()
+			_enable_auto_hunt()
+			return
 	_set_goal(_quest_target.global_position)
+
+
+func _enable_auto_hunt() -> void:
+	if GameState.auto_hunt:
+		return
+	GameState.auto_hunt = true
+	var hud = get_tree().get_first_node_in_group("hud")
+	if hud:
+		hud.sync_auto_button()
+		hud.show_toast("자동 사냥 켜짐")
 
 
 func stop_quest_move() -> void:
@@ -109,6 +130,11 @@ func _quest_step(delta: float) -> Vector2:
 		if t.has_method("interact"):
 			t.interact(player)
 		return Vector2.ZERO
+	# 가는 길에 적이 바로 옆에 붙으면 먼저 물리친다
+	var close := _nearest(get_tree().get_nodes_in_group("enemies"), player.global_position, attack_reach + 4.0)
+	if close:
+		_attack_dir = (close.global_position - player.global_position).normalized()
+		return Vector2.ZERO
 	_repath_timer -= delta
 	if _repath_timer <= 0.0 or _goal.distance_to(target_pos) > 12.0:
 		_set_goal(target_pos)
@@ -138,6 +164,7 @@ func _hunt_step(delta: float) -> Vector2:
 		_swings = 0
 	_hunt_target = enemy
 	var to_enemy: Vector2 = enemy.global_position - me
+	_try_job_skill(to_enemy)
 	if to_enemy.length() < attack_reach + 6.0:
 		# 칼은 상하좌우로만 휘두르므로, 적과 한 줄로 맞춘 뒤 공격한다
 		if absf(to_enemy.x) >= absf(to_enemy.y):
@@ -216,3 +243,20 @@ func _follow_path(delta: float, final_pos: Vector2) -> Vector2:
 		var d := final_pos - me
 		return d.normalized() if d.length() > 3.0 else Vector2.ZERO
 	return (_path[0] - me).normalized()
+
+
+
+## 자동 사냥 중 직업 스킬·돌진을 알아서 쓴다
+func _try_job_skill(to_enemy: Vector2) -> void:
+	var skill: String = GameState.active_skills()[1]
+	var dist := to_enemy.length()
+	match skill:
+		"whirlwind", "shield_guard":
+			if dist < 30.0:
+				player.use_skill(1)
+		"crystal_shot":
+			if dist < 110.0 and dist > 20.0:
+				player.face_toward(player.global_position + to_enemy)
+				player.use_skill(1)
+	if player.hp <= 1 and GameState.quickslot != "" and GameState.inventory.get(GameState.quickslot, 0) > 0:
+		player.use_quickslot()  # 체력이 위험하면 물약

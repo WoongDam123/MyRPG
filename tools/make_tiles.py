@@ -1,7 +1,7 @@
 import sys, random, math
 from PIL import Image
 out=sys.argv[1]; random.seed(11)
-T=16; N=15
+T=16; N=17
 img=Image.new("RGBA",(T*N,T),(0,0,0,0))
 def tile(i): return i*T
 def px(i,x,y,c):
@@ -93,5 +93,19 @@ for _ in range(16):
     col=random.choice([(185,178,165,255),(120,112,100,255),(170,162,148,255)])
     for y in range(cy-r,cy+r):
         for x in range(cx-r,cx+r+1): px(13,x,y,col)
+# 15 동굴 바닥 / 16 동굴 벽(바위)
+random.seed(15)
+for y in range(T):
+    for x in range(T): px(15,x,y,(84,76,70,255))
+for _ in range(26): px(15,random.randrange(T),random.randrange(T),random.choice([(70,63,58,255),(98,90,82,255)]))
+for (x,y) in [(3,5),(4,5),(11,11),(12,11),(12,12)]: px(15,x,y,(60,54,50,255))
+for y in range(T):
+    for x in range(T):
+        c=(66,58,54,255) if y<12 else (46,40,38,255)
+        if y<12 and (x*7+y*3)%13==0: c=(88,78,72,255)
+        if y in (5,6) and x in range(2,7): c=(52,46,44,255)
+        if y==9 and x in range(9,14): c=(52,46,44,255)
+        px(16,x,y,c)
+for (x,y) in [(4,3),(12,6)]: px(16,x,y,(140,180,210,255))  # 광석 반짝
 img.save(out+"/tiles/tiles.png")
 

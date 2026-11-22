@@ -17,10 +17,12 @@ extends Node2D
 
 var map_id: String = ""  ## 맵 파일 이름 (예: "village")
 var _astar: AStarGrid2D  ## 자동 이동용 길찾기 격자 (처음 필요할 때 만든다)
+var _ready_frame: int = 0
 
 
 func _ready() -> void:
 	add_to_group("map")
+	_ready_frame = Engine.get_physics_frames()
 	map_id = scene_file_path.get_file().get_basename()
 	_place_player()
 	camera.zoom = Vector2(camera_zoom, camera_zoom)
@@ -90,10 +92,24 @@ func _play_enter_event() -> void:
 
 
 
+## 쓰러진 적을 잠시 뒤 같은 자리에 다시 놓는다
+func respawn_later(scene_path: String, pos: Vector2, delay: float) -> void:
+	await get_tree().create_timer(delay).timeout
+	if not is_inside_tree():
+		return
+	var e: Node2D = load(scene_path).instantiate()
+	e.position = pos
+	e.modulate.a = 0.0
+	$World.add_child(e)
+	e.create_tween().tween_property(e, "modulate:a", 1.0, 0.6)
+
+
 # ================= 자동 이동용 길찾기 =================
 
 ## from에서 to까지 걸어갈 수 있는 길(점 목록)을 찾는다. 못 찾으면 빈 배열.
 func find_path(from: Vector2, to: Vector2) -> PackedVector2Array:
+	if Engine.get_physics_frames() - _ready_frame < 6:
+		return PackedVector2Array()  # 나무·벽의 충돌 정보가 아직 준비되지 않았다
 	if _astar == null:
 		_build_grid()
 	var a := _nearest_free(Vector2i((from / 16.0).floor()))
