@@ -255,7 +255,7 @@ func build_shop() -> void:
 	prop(m, "Shelf2", "res://assets/props/shelf.png", Vector2(188, 58), Vector2(20, 10))
 	prop(m, "Crate", "res://assets/props/crate.png", Vector2(30, 120), Vector2(14, 10))
 	prop(m, "Plant", "res://assets/props/plant.png", Vector2(196, 122), Vector2(10, 6))
-	npc(m, "Shopkeeper", "잡화점 주인", "res://assets/npcs/dad.png", Vector2(112, 56), "down", ["어서 오게!"], "shopkeeper")
+	npc(m, "Shopkeeper", "잡화점 주인", "res://assets/npcs/shopkeeper.png", Vector2(112, 56), "down", ["어서 오게!"], "shopkeeper")
 	portal(m, "shop_out", Vector2(112, 136), "res://scenes/maps/village.tscn", "shop_door", "", Vector2(0, -24))
 	finish(m, Vector2(112, 110), "res://scenes/maps/shop.tscn")
 

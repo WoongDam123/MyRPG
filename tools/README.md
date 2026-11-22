@@ -4,7 +4,8 @@ Godot는 이 폴더를 무시합니다(`.gdignore`). 게임 실행에는 필요 
 
 | 파일 | 하는 일 |
 |---|---|
-| `make_sprites.py` | 플레이어 그림 |
+| `make_paperdoll.py` | **32px 손그림 도트 용사 레이어**(몸·머리·갑옷 2종·무기 2종·직업 망토 3종·증표)와 NPC 6명 |
+| `make_sprites.py` | (옛) 16px 플레이어 — 옛 NPC 생성기에서 재사용 |
 | `make_tiles.py` | 타일 17종 그림 (잔디·길·물·나무·바위·덤불·울타리·나무바닥·벽·밭·자갈·동굴 바닥·동굴 벽) |
 | `make_ui.py`, `make_items.py`, `make_enemies.py` | 공격 버튼·칼 효과, 하트·코인, 슬라임 |
 | `make_prologue.py` | 미지의 존재, 속성 구슬 |

@@ -43,6 +43,10 @@ const ITEMS := {
 		"desc": "아빠가 젊은 시절 쓰던 목검. 낡았지만 손에 잘 맞는다.\n공격력 +1"},
 	"leather_armor": {"name": "가죽옷", "type": "armor", "icon": 1, "hp": 1, "price": 8,
 		"desc": "튼튼하게 무두질한 가죽옷. 한 대쯤은 더 버틸 수 있을 것 같다.\n최대 체력 +1"},
+	"iron_sword": {"name": "철검", "type": "weapon", "icon": 7, "atk": 3, "price": 60,
+		"desc": "자갈 마을 대장간에서 벼린 튼튼한 철검. 은빛 칼날이 번쩍인다.\n공격력 +3"},
+	"iron_armor": {"name": "철 갑옷", "type": "armor", "icon": 8, "hp": 3, "price": 80,
+		"desc": "둥근 어깨 판이 달린 철 갑옷. 무겁지만 든든하다.\n최대 체력 +3"},
 	"potion": {"name": "회복 물약", "type": "consumable", "icon": 2, "heal": 2, "price": 5,
 		"desc": "마시면 체력을 2 회복한다."},
 	"herb": {"name": "약초", "type": "material", "icon": 3, "price": 4,
@@ -56,7 +60,7 @@ const ITEMS := {
 }
 
 ## 상점에서 파는 물건과 가격
-const SHOP_STOCK := {"potion": 10, "herb": 6}
+const SHOP_STOCK := {"potion": 10, "herb": 6, "iron_sword": 60, "iron_armor": 80}
 
 const SLOT_NAMES := {"weapon": "무기", "armor": "방어구", "accessory": "장신구"}
 

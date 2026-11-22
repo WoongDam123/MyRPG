@@ -30,7 +30,7 @@ var guard_time: float = 0.0  ## 방패 막기 남은 시간 (이 동안 무적)
 const PROJECTILE := preload("res://scenes/projectile.tscn")
 const DIRS := {"down": Vector2.DOWN, "up": Vector2.UP, "left": Vector2.LEFT, "right": Vector2.RIGHT}
 
-@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var sprite: Node2D = $Doll  ## 종이 인형(장비 레이어) 캐릭터
 @onready var slash: Sprite2D = $Slash
 @onready var attack_hitbox: Area2D = $AttackHitbox
 @onready var attack_shape: CollisionShape2D = $AttackHitbox/CollisionShape2D
@@ -40,10 +40,10 @@ const DIRS := {"down": Vector2.DOWN, "up": Vector2.UP, "left": Vector2.LEFT, "ri
 
 ## 방향별 칼 휘두르기 위치와 회전 (발밑이 기준점, 몸 중심은 y = -8)
 const SLASH_POSE := {
-	"right": [Vector2(10, -8), 0.0],
-	"left": [Vector2(-10, -8), PI],
-	"down": [Vector2(0, 2), PI / 2],
-	"up": [Vector2(0, -18), -PI / 2],
+	"right": [Vector2(13, -11), 0.0],
+	"left": [Vector2(-13, -11), PI],
+	"down": [Vector2(0, 1), PI / 2],
+	"up": [Vector2(0, -24), -PI / 2],
 }
 
 
@@ -249,12 +249,15 @@ func set_controls(enabled: bool) -> void:
 	if not enabled:
 		velocity = Vector2.ZERO
 		knockback = Vector2.ZERO
-		sprite.play("idle_" + facing)
+		if not is_attacking:
+			sprite.play("idle_" + facing)
 	else:
 		_wait_attack_release = true
 
 
 func _update_animation(input_dir: Vector2) -> void:
+	if is_attacking:
+		return  # 공격 동작이 끝날 때까지
 	if input_dir == Vector2.ZERO:
 		sprite.play("idle_" + facing)
 		return
@@ -269,6 +272,7 @@ func _attack() -> void:
 	is_attacking = true
 	_hit_this_swing.clear()
 
+	sprite.play("attack_" + facing)
 	var pose: Array = SLASH_POSE[facing]
 	slash.position = pose[0]
 	slash.rotation = pose[1]

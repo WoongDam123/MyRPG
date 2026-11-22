@@ -1,6 +1,6 @@
 extends StaticBody2D
 ## 마을 사람(NPC): 가까이 가서 공격 버튼(Space/J)을 누르면 대화한다.
-## 그림은 4칸(아래·왼쪽·오른쪽·위) 가로 한 줄 이미지.
+## 그림은 32x32 칸 4개(아래·왼쪽·오른쪽·위)를 가로로 붙인 이미지. (tools/make_paperdoll.py)
 
 @export var npc_name: String = "마을 사람"
 @export var texture: Texture2D
@@ -27,7 +27,7 @@ func _process(_delta: float) -> void:
 	var near := _player != null and global_position.distance_to(_player.global_position) < 30.0
 	bubble.visible = near
 	if near:
-		bubble.position.y = -34.0 + sin(Time.get_ticks_msec() / 200.0) * 1.5
+		bubble.position.y = -42.0 + sin(Time.get_ticks_msec() / 200.0) * 1.5
 
 
 func interact(player: Node2D) -> void:
