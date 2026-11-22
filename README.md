@@ -11,7 +11,7 @@ Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG.
 - [x] 1단계: 개발 환경 준비 (모바일 화면 설정)
 - [x] 2단계: 캐릭터 띄우고 움직이기 (방향키/WASD, 4방향 걷기 애니메이션)
 - [x] 3단계: 모바일 조작 (가상 조이스틱, 공격 버튼)
-- [ ] 4단계: 맵 (타일맵, 충돌, 카메라)
+- [x] 4단계: 맵 (타일맵, 충돌, 카메라)
 - [ ] 5단계: 전투 (공격, 적 AI, 체력)
 - [ ] 6단계: UI와 아이템
 - [ ] 7단계: 안드로이드 휴대폰에 설치
@@ -22,10 +22,13 @@ Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG.
 - 가로 화면 고정, 텍스처 필터 Nearest (픽셀 아트)
 
 ## 파일 구조
-- `scenes/main.tscn` — 메인 화면 (잔디 배경 + 플레이어)
+- `scenes/main.tscn` — 메인 화면: Ground(바닥 타일) / World(y-sort: Obstacles 타일 + Player) / HUD
+- `scripts/main.gd` — 맵 크기에 맞춰 카메라 경계 설정
+- `assets/tiles/tiles.png`, `tileset.tres` — 잔디·꽃·흙길·물·나무·바위·덤불 타일 (물·나무·바위·덤불은 충돌)
+- `tools/` — 그림·맵 생성 스크립트 (게임 실행과 무관)
 - `scenes/player.tscn` — 플레이어 (CharacterBody2D + AnimatedSprite2D + 충돌 박스)
 - `scripts/player.gd` — 플레이어 이동·애니메이션·공격 코드
-- `scenes/hud.tscn` — 모바일 조작 화면 (VirtualJoystick + 공격 TouchScreenButton)
+- `scenes/hud.tscn` — 모바일 조작 화면 (VirtualJoystick + 공격 TouchScreenButton + 안내 문구)
 - `assets/ui/`, `assets/effects/` — 공격 버튼, 칼 휘두르기 효과 그림
 - `assets/sprites/player.png` — 플레이어 그림 (16×16, 4방향 × 3프레임 임시 그림)
 - `assets/sprites/player_frames.tres` — 애니메이션 묶음 (idle_*/walk_* × down/left/right/up)
