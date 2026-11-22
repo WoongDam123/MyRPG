@@ -19,12 +19,11 @@ func _init():
 	quit()
 
 # ---------- 공통 도우미 ----------
-func new_map(map_name: String, zoom: float, fx := "outdoor") -> Dictionary:
+func new_map(map_name: String, zoom: float) -> Dictionary:
 	var root := Node2D.new(); root.name = "Map"
 	root.set_script(load("res://scripts/map.gd"))
 	root.map_name = map_name
 	root.camera_zoom = zoom
-	root.fx_profile = fx
 	var ground := TileMapLayer.new(); ground.name = "Ground"; ground.tile_set = TS
 	root.add_child(ground); ground.owner = root
 	var world := Node2D.new(); world.name = "World"; world.y_sort_enabled = true
@@ -43,11 +42,6 @@ func prop(m: Dictionary, pname: String, tex: String, pos: Vector2, col: Vector2)
 	var body := StaticBody2D.new(); body.name = pname; body.position = pos
 	add(m.world, body, m.root)
 	var t: Texture2D = load(tex)
-	var sh := Sprite2D.new(); sh.name = "Shadow"
-	sh.texture = load("res://assets/effects/shadow_xl.png" if col.x > 40 else ("res://assets/effects/shadow_l.png" if col.x > 18 else "res://assets/effects/shadow_m.png"))
-	sh.scale = Vector2(col.x / 52.0, 1.0) if col.x > 40 else Vector2.ONE
-	sh.position = Vector2(0, -1)
-	add(body, sh, m.root)
 	var spr := Sprite2D.new(); spr.name = "Sprite2D"; spr.texture = t
 	spr.offset = Vector2(0, -t.get_height() / 2.0)
 	add(body, spr, m.root)
@@ -95,7 +89,6 @@ func marker(m: Dictionary, mname: String, pos: Vector2) -> void:
 	mk.add_to_group("spawn_points", true)
 
 func finish(m: Dictionary, player_pos: Vector2, path: String) -> void:
-	load("res://tools/convert_nature.gd").convert_layer(m.obs)  # 나무·바위·덤불 → 2.5D 자연물
 	var player: Node2D = load("res://scenes/player.tscn").instantiate()
 	player.position = player_pos
 	add(m.world, player, m.root)
@@ -109,7 +102,7 @@ func cell(layer: TileMapLayer, x: int, y: int, t: int) -> void:
 
 # ---------- 우리 집 (실내, 20 x 12 타일) ----------
 func build_house() -> void:
-	var m := new_map("우리 집", 2.0, "indoor")
+	var m := new_map("우리 집", 2.0)
 	for y in 12:
 		for x in 20:
 			var t := FLOOR
@@ -141,7 +134,7 @@ func build_house() -> void:
 
 # ---------- 자갈 마을 (48 x 30 타일) ----------
 func build_village() -> void:
-	var m := new_map("자갈 마을", 1.5)
+	var m := new_map("자갈 마을", 1.0)
 	const W := 48
 	const H := 30
 	var road := {}
@@ -221,7 +214,7 @@ func build_village() -> void:
 
 # ---------- 창고 (실내, 12 x 8 타일) ----------
 func build_barn() -> void:
-	var m := new_map("창고", 2.0, "indoor")
+	var m := new_map("창고", 2.0)
 	for y in 8:
 		for x in 12:
 			var t := FLOOR
@@ -248,7 +241,7 @@ func build_barn() -> void:
 
 # ---------- 잡화점 (실내, 14 x 9 타일) ----------
 func build_shop() -> void:
-	var m := new_map("잡화점", 2.0, "indoor")
+	var m := new_map("잡화점", 2.0)
 	for y in 9:
 		for x in 14:
 			var t := FLOOR
@@ -262,13 +255,13 @@ func build_shop() -> void:
 	prop(m, "Shelf2", "res://assets/props/shelf.png", Vector2(188, 58), Vector2(20, 10))
 	prop(m, "Crate", "res://assets/props/crate.png", Vector2(30, 120), Vector2(14, 10))
 	prop(m, "Plant", "res://assets/props/plant.png", Vector2(196, 122), Vector2(10, 6))
-	npc(m, "Shopkeeper", "잡화점 주인", "res://assets/npcs/shopkeeper.png", Vector2(112, 56), "down", ["어서 오게!"], "shopkeeper")
+	npc(m, "Shopkeeper", "잡화점 주인", "res://assets/npcs/dad.png", Vector2(112, 56), "down", ["어서 오게!"], "shopkeeper")
 	portal(m, "shop_out", Vector2(112, 136), "res://scenes/maps/village.tscn", "shop_door", "", Vector2(0, -24))
 	finish(m, Vector2(112, 110), "res://scenes/maps/shop.tscn")
 
 # ---------- 버려진 광산 (40 x 26 타일, 방 6개를 통로로 연결) ----------
 func build_mine() -> void:
-	var m := new_map("버려진 광산", 1.75, "cave")
+	var m := new_map("버려진 광산", 1.5)
 	var open := {}
 	var carve := func(r: Rect2i):
 		for y in range(r.position.y, r.end.y):
@@ -294,12 +287,12 @@ func build_mine() -> void:
 	portal(m, "mine_out", Vector2(40, 336), "res://scenes/maps/rock_forest.tscn", "mine_entrance", "바위 숲", Vector2(26, 0))
 	portal(m, "boss_door", Vector2(568, 58), "res://scenes/maps/mine_boss.tscn", "boss_out", "깊은 곳", Vector2(0, 26),
 		{"item": "mine_key", "level": 5, "text": "(녹슨 자물쇠로 잠긴 문이다. 열쇠가 필요하다.)"})
-	tint(m, Color(0.42, 0.4, 0.5))
+	tint(m, Color(0.78, 0.74, 0.82))
 	finish(m, Vector2(70, 336), "res://scenes/maps/mine.tscn")
 
 # ---------- 광산 깊은 곳 (보스 방, 22 x 16 타일) ----------
 func build_mine_boss() -> void:
-	var m := new_map("광산 깊은 곳", 1.75, "cave")
+	var m := new_map("광산 깊은 곳", 1.5)
 	for y in 16:
 		for x in 22:
 			var wall := y < 2 or x < 2 or x > 19 or y > 14
@@ -307,7 +300,7 @@ func build_mine_boss() -> void:
 			cell(m.ground, x, y, CAVE_WALL if wall else CAVE_FLOOR)
 	enemy(m, "res://scenes/enemies/king_slime.tscn", Vector2(176, 100), "KingSlime")
 	portal(m, "boss_out", Vector2(176, 226), "res://scenes/maps/mine.tscn", "boss_door", "광산", Vector2(0, -26))
-	tint(m, Color(0.5, 0.46, 0.56))
+	tint(m, Color(0.72, 0.68, 0.78))
 	finish(m, Vector2(176, 200), "res://scenes/maps/mine_boss.tscn")
 
 # ---------- 대지의 제단 (24 x 18 타일) ----------

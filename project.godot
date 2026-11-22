@@ -19,7 +19,6 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 GameState="*res://scripts/autoload/game_state.gd"
 Transition="*res://scripts/autoload/transition.gd"
 Story="*res://scripts/autoload/story.gd"
-PostFX="*res://scripts/autoload/post_fx.gd"
 
 [display]
 

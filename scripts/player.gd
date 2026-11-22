@@ -40,10 +40,10 @@ const DIRS := {"down": Vector2.DOWN, "up": Vector2.UP, "left": Vector2.LEFT, "ri
 
 ## 방향별 칼 휘두르기 위치와 회전 (발밑이 기준점, 몸 중심은 y = -8)
 const SLASH_POSE := {
-	"right": [Vector2(13, -10), 0.0],
-	"left": [Vector2(-13, -10), PI],
-	"down": [Vector2(0, 1), PI / 2],
-	"up": [Vector2(0, -22), -PI / 2],
+	"right": [Vector2(10, -8), 0.0],
+	"left": [Vector2(-10, -8), PI],
+	"down": [Vector2(0, 2), PI / 2],
+	"up": [Vector2(0, -18), -PI / 2],
 }
 
 
@@ -52,8 +52,6 @@ func _ready() -> void:
 	max_hp = GameState.get_max_hp()
 	hp = GameState.player_hp if GameState.player_hp >= 0 else max_hp  # -1, -2 = 가득
 	GameState.stats_changed.connect(_on_stats_changed)
-	GameState.skills_changed.connect(_apply_look)
-	_apply_look()
 	coins = GameState.coins
 	add_to_group("player")
 	attack_hitbox.body_entered.connect(_on_attack_hit)
@@ -251,22 +249,12 @@ func set_controls(enabled: bool) -> void:
 	if not enabled:
 		velocity = Vector2.ZERO
 		knockback = Vector2.ZERO
-		if not is_attacking:
-			sprite.play("idle_" + facing)
+		sprite.play("idle_" + facing)
 	else:
 		_wait_attack_release = true
 
 
-## 직업에 따라 겉모습(그림)을 바꾼다: 견습 용사 / 화강 기사 / 강철 투사 / 석영 술사
-func _apply_look() -> void:
-	var look: String = GameState.job if GameState.job != "" else "hero"
-	sprite.sprite_frames = load("res://assets/characters/%s_frames.tres" % look)
-	sprite.play("idle_" + facing)
-
-
 func _update_animation(input_dir: Vector2) -> void:
-	if is_attacking:
-		return  # 공격 동작이 끝날 때까지 기다린다
 	if input_dir == Vector2.ZERO:
 		sprite.play("idle_" + facing)
 		return
@@ -281,7 +269,6 @@ func _attack() -> void:
 	is_attacking = true
 	_hit_this_swing.clear()
 
-	sprite.play("attack_" + facing)
 	var pose: Array = SLASH_POSE[facing]
 	slash.position = pose[0]
 	slash.rotation = pose[1]
@@ -294,7 +281,7 @@ func _attack() -> void:
 	attack_shape.set_deferred("disabled", false)
 
 	var tween := create_tween().set_parallel(true)
-	tween.tween_property(slash, "scale", Vector2(1.35, 1.35), attack_duration * 0.5)
+	tween.tween_property(slash, "scale", Vector2.ONE, attack_duration * 0.5)
 	tween.tween_property(slash, "modulate:a", 0.0, attack_duration).set_delay(attack_duration * 0.3)
 	await tween.finished
 

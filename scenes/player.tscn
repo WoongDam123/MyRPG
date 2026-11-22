@@ -1,22 +1,10 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_script"]
-[ext_resource type="SpriteFrames" path="res://assets/characters/hero_frames.tres" id="2_frames"]
-[ext_resource type="Texture2D" path="res://assets/effects/shadow_m.png" id="6_shadow"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/player_frames.tres" id="2_frames"]
 [ext_resource type="Texture2D" path="res://assets/effects/slash.png" id="3_slash"]
 [ext_resource type="Script" path="res://scripts/auto_pilot.gd" id="4_auto"]
 [ext_resource type="Texture2D" path="res://assets/effects/ring.png" id="5_ring"]
-
-[sub_resource type="Gradient" id="Gradient_light"]
-colors = PackedColorArray(1, 0.92, 0.75, 1, 1, 0.9, 0.7, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_light"]
-gradient = SubResource("Gradient_light")
-width = 128
-height = 128
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_feet"]
 size = Vector2(10, 6)
@@ -25,25 +13,20 @@ size = Vector2(10, 6)
 size = Vector2(18, 18)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
-size = Vector2(12, 18)
+size = Vector2(10, 12)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 motion_mode = 1
 script = ExtResource("1_script")
 
-[node name="Shadow" type="Sprite2D" parent="."]
-position = Vector2(0, -1)
-texture = ExtResource("6_shadow")
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -13)
+position = Vector2(0, -8)
 sprite_frames = ExtResource("2_frames")
 animation = &"idle_down"
 
 [node name="Slash" type="Sprite2D" parent="."]
 visible = false
-modulate = Color(1.2, 1.15, 1, 1)
 texture = ExtResource("3_slash")
 
 [node name="Ring" type="Sprite2D" parent="."]
@@ -70,7 +53,7 @@ collision_mask = 4
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -9)
+position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_hurt")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -80,10 +63,3 @@ position_smoothing_speed = 8.0
 
 [node name="AutoPilot" type="Node" parent="."]
 script = ExtResource("4_auto")
-
-[node name="Light" type="PointLight2D" parent="."]
-position = Vector2(0, -10)
-enabled = false
-energy = 1.1
-texture = SubResource("GradientTexture2D_light")
-texture_scale = 2.6

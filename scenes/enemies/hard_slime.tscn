@@ -15,10 +15,10 @@ damage = 2
 exp_reward = 14
 coin_chance = 0.7
 
-[node name="AnimatedSprite2D" parent="." index="1"]
-position = Vector2(0, -9)
+[node name="AnimatedSprite2D" parent="." index="0"]
+position = Vector2(0, -8)
 sprite_frames = ExtResource("2_frames")
 
-[node name="CollisionShape2D" parent="." index="2"]
+[node name="CollisionShape2D" parent="." index="1"]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_body")

@@ -4,12 +4,7 @@ Godot는 이 폴더를 무시합니다(`.gdignore`). 게임 실행에는 필요 
 
 | 파일 | 하는 일 |
 |---|---|
-| `pixel3d.py` | **2.5D 도트 렌더러**: 타원체·상자로 만든 작은 3D 모형을 위에서 비스듬히 본 도트 그림으로 찍음 (명암 램프·윤곽선·금속 반짝임) |
-| `make_hero.py` | 용사(견습·화강 기사·강철 투사·석영 술사)와 NPC 6명 — 32x32, 4방향 × 대기2·걷기4·공격3 |
-| `make_monsters.py` | 슬라임 3종·킹슬라임·대지의 수호자(4프레임), 큰 나무 2종·바위·덤불, 바닥 그림자 |
-| `build_char_frames.gd` | 2.5D 캐릭터·적 애니메이션 |
-| `convert_nature.gd` | 맵의 옛 나무·바위·덤불 타일을 2.5D 자연물로 교체 |
-| `make_sprites.py` | (옛) 16px 플레이어 — NPC 옛 그림 생성에 쓰였음 |
+| `make_sprites.py` | 플레이어 그림 |
 | `make_tiles.py` | 타일 17종 그림 (잔디·길·물·나무·바위·덤불·울타리·나무바닥·벽·밭·자갈·동굴 바닥·동굴 벽) |
 | `make_ui.py`, `make_items.py`, `make_enemies.py` | 공격 버튼·칼 효과, 하트·코인, 슬라임 |
 | `make_prologue.py` | 미지의 존재, 속성 구슬 |
@@ -17,7 +12,7 @@ Godot는 이 폴더를 무시합니다(`.gdignore`). 게임 실행에는 필요 
 | `make_errand_art.py` | 창고 건물, 짐 상자·건초·보물 상자, 아이템 아이콘, 가방 버튼 |
 | `make_chapter_art.py` | 촌장·대지의 정령, 상점 카운터, 제단, 바위·단단한·킹슬라임, 골렘, 열쇠·결정·증표 아이콘, 스킬 아이콘, 수정 탄환, 충격파 |
 | `build_enemy_frames.gd` | 새 적들의 애니메이션 |
-| `build_frames.gd`, `build_slime_frames.gd`, `build_enemy_frames.gd` | (옛) 16px 애니메이션 — 지금은 build_char_frames.gd 사용 |
+| `build_frames.gd`, `build_slime_frames.gd` | 애니메이션(SpriteFrames) |
 | `build_tileset.gd` | 타일셋 + 충돌 모양 |
 | `build_maps.gd` | 우리 집 · 자갈 마을 · 창고 · 잡화점 · 버려진 광산 · 광산 깊은 곳 · 대지의 제단 맵 생성 |
 | `build_map.gd` | (옛 도구) 바위 숲 최초 생성용 — 실행 금지 |

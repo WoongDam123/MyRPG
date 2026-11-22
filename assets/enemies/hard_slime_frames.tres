@@ -4,19 +4,11 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ekws5"]
 atlas = ExtResource("1_hxj8t")
-region = Rect2(0, 0, 24, 22)
+region = Rect2(0, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kbier"]
 atlas = ExtResource("1_hxj8t")
-region = Rect2(24, 0, 24, 22)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3afot"]
-atlas = ExtResource("1_hxj8t")
-region = Rect2(48, 0, 24, 22)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_px67m"]
-atlas = ExtResource("1_hxj8t")
-region = Rect2(72, 0, 24, 22)
+region = Rect2(16, 0, 16, 16)
 
 [resource]
 animations = [{
@@ -26,14 +18,8 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_kbier")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3afot")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_px67m")
 }],
 "loop": 1,
 "name": &"bounce",
-"speed": 4.0
+"speed": 2.0
 }]

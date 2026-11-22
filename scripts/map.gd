@@ -6,8 +6,7 @@ extends Node2D
 ## - 처음 들어왔을 때 한 번만 나오는 대사(이벤트)를 재생한다
 
 @export var map_name: String = ""  ## 들어올 때 화면 위에 잠깐 표시되는 이름
-@export var camera_zoom: float = 1.5  ## 실내는 2로 하면 가까이 보인다
-@export_enum("outdoor", "indoor", "cave", "off") var fx_profile: String = "outdoor"  ## 화면 효과 분위기
+@export var camera_zoom: float = 1.0  ## 실내는 2로 하면 가까이 보인다
 @export var enter_event_flag: String = ""  ## 이 이름의 기록이 없을 때만 아래 대사를 재생
 @export var enter_event_lines: Array = []  ## [{"name": "엄마", "text": "..."}, ...]
 
@@ -26,8 +25,6 @@ func _ready() -> void:
 	_ready_frame = Engine.get_physics_frames()
 	map_id = scene_file_path.get_file().get_basename()
 	_place_player()
-	PostFX.apply(fx_profile)
-	player.get_node("Light").enabled = fx_profile == "cave" and GameState.fx_enabled  # 동굴에서는 용사 주변만 밝게
 	camera.zoom = Vector2(camera_zoom, camera_zoom)
 	_update_camera_limits()
 	get_viewport().size_changed.connect(_update_camera_limits)

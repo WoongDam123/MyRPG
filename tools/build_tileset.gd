@@ -1,7 +1,5 @@
 extends SceneTree
-# 타일셋(.tres) 생성기
-#  source 0: 16x16 기본 타일 17종 (바닥·물·벽·울타리 등)
-#  source 1: 2.5D 자연물 (큰 나무 2종 32x48, 바위, 덤불) — 앞뒤 가리기(y-sort)와 충돌 포함
+# 타일셋(.tres) 생성기: 타일 17종과 충돌 모양
 enum { GRASS, GRASS2, FLOWER, PATH, WATER, TREE, ROCK, BUSH, FENCE_H, FLOOR, WALL_TOP, WALL, SOIL, GRAVEL, FENCE_V, CAVE_FLOOR, CAVE_WALL }
 func _init():
 	var ts := TileSet.new()
@@ -29,28 +27,5 @@ func _init():
 		data.set_collision_polygon_points(0, 0, shapes[id])
 	for id in [TREE, ROCK, BUSH, FENCE_H, FENCE_V]:
 		src.get_tile_data(Vector2i(id, 0), 0).y_sort_origin = 6
-
-	# ---- 2.5D 자연물 ----
-	var nat := TileSetAtlasSource.new()
-	nat.texture = load("res://assets/nature/nature.png")
-	nat.texture_region_size = Vector2i(16, 16)
-	ts.add_source(nat, 1)
-	for spec in [[Vector2i(0, 0), Vector2i(2, 3)], [Vector2i(2, 0), Vector2i(2, 3)], [Vector2i(4, 2), Vector2i(1, 1)], [Vector2i(5, 2), Vector2i(1, 1)]]:
-		nat.create_tile(spec[0], spec[1])
-	var trunk := PackedVector2Array([Vector2(-4, 1), Vector2(4, 1), Vector2(4, 8), Vector2(-4, 8)])
-	for c in [Vector2i(0, 0), Vector2i(2, 0)]:
-		var td: TileData = nat.get_tile_data(c, 0)
-		td.texture_origin = Vector2i(0, 16)  # 큰 그림의 밑동이 칸 아래쪽에 오도록
-		td.y_sort_origin = 6
-		td.add_collision_polygon(0)
-		td.set_collision_polygon_points(0, 0, trunk)
-	var rock_td: TileData = nat.get_tile_data(Vector2i(4, 2), 0)
-	rock_td.y_sort_origin = 5
-	rock_td.add_collision_polygon(0)
-	rock_td.set_collision_polygon_points(0, 0, shapes[ROCK])
-	var bush_td: TileData = nat.get_tile_data(Vector2i(5, 2), 0)
-	bush_td.y_sort_origin = 5
-	bush_td.add_collision_polygon(0)
-	bush_td.set_collision_polygon_points(0, 0, shapes[BUSH])
 	print(ResourceSaver.save(ts, "res://assets/tiles/tileset.tres"))
 	quit()
