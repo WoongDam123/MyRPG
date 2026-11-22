@@ -4,6 +4,7 @@ extends CharacterBody2D
 
 signal health_changed(current: int, maximum: int)  ## 체력이 바뀔 때 HUD에 알린다
 signal died
+signal coins_changed(total: int)  ## 코인 개수가 바뀔 때
 
 @export var speed: float = 80.0  ## 1초에 움직이는 픽셀 수
 @export var attack_duration: float = 0.25  ## 칼 휘두르기 한 번에 걸리는 시간(초)
@@ -17,6 +18,7 @@ var hp: int
 var invincible: float = 0.0  ## 남은 무적 시간
 var knockback: Vector2 = Vector2.ZERO
 var is_dead: bool = false
+var coins: int = 0
 var _hit_this_swing: Array = []  ## 한 번 휘두를 때 같은 적을 두 번 때리지 않도록
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -125,6 +127,20 @@ func take_damage(amount: int, from_position: Vector2) -> void:
 	knockback = (global_position - from_position).normalized() * 180.0
 	if hp == 0:
 		_die()
+
+
+## 아이템을 주웠을 때 Pickup이 호출한다. 주울 수 없으면 false.
+func collect(kind: int) -> bool:
+	match kind:
+		0:  # 하트: 체력이 가득이면 줍지 않는다
+			if hp >= max_hp or is_dead:
+				return false
+			hp += 1
+			health_changed.emit(hp, max_hp)
+		1:  # 코인
+			coins += 1
+			coins_changed.emit(coins)
+	return true
 
 
 func _die() -> void:

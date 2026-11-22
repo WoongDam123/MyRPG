@@ -6,6 +6,10 @@ extends CharacterBody2D
 @export var speed: float = 32.0  ## 쫓아올 때 속도
 @export var chase_range: float = 90.0  ## 이 거리(픽셀) 안에 플레이어가 오면 쫓아온다
 @export var damage: int = 1  ## 플레이어에게 닿았을 때 주는 피해
+@export_range(0.0, 1.0) var coin_chance: float = 0.6  ## 죽을 때 코인을 떨어뜨릴 확률
+@export_range(0.0, 1.0) var heart_chance: float = 0.25  ## 코인 대신 하트를 떨어뜨릴 확률
+
+const PICKUP_SCENE := preload("res://scenes/pickup.tscn")
 
 var hp: int
 var knockback: Vector2 = Vector2.ZERO  ## 맞았을 때 밀려나는 속도 (점점 줄어든다)
@@ -68,8 +72,25 @@ func _die() -> void:
 	is_dead = true
 	remove_from_group("enemies")
 	$CollisionShape2D.set_deferred("disabled", true)
+	_drop_item()
 	var tween := create_tween().set_parallel(true)
 	tween.tween_property(sprite, "scale", Vector2(1.6, 0.3), 0.25)
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.25)
 	await tween.finished
 	queue_free()
+
+
+## 확률에 따라 하트나 코인을 떨어뜨린다
+func _drop_item() -> void:
+	var roll := randf()
+	var kind: int
+	if roll < heart_chance:
+		kind = 0  # Pickup.Kind.HEART
+	elif roll < heart_chance + coin_chance:
+		kind = 1  # Pickup.Kind.COIN
+	else:
+		return  # 아무것도 안 떨어뜨림
+	var item := PICKUP_SCENE.instantiate()
+	item.kind = kind
+	item.position = position
+	get_parent().add_child.call_deferred(item)  # 물리 계산 중이라 한 박자 늦게 추가

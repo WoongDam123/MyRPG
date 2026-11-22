@@ -1,10 +1,10 @@
 extends Node2D
-## 메인 장면: 카메라 경계를 맵 크기에 맞추고, 플레이어 체력을 HUD에 연결한다.
+## 메인 장면: 카메라 경계를 맵 크기에 맞추고, 플레이어 시그널을 HUD에 연결한다.
 
 @onready var ground: TileMapLayer = $Ground
 @onready var player: CharacterBody2D = $World/Player
 @onready var camera: Camera2D = $World/Player/Camera2D
-@onready var hp_label: Label = $HUD/HPLabel
+@onready var hud: CanvasLayer = $HUD
 
 
 func _ready() -> void:
@@ -16,10 +16,8 @@ func _ready() -> void:
 	camera.limit_right = used.end.x * tile_size.x
 	camera.limit_bottom = used.end.y * tile_size.y
 
-	# 2) 플레이어 체력이 바뀌면 HUD 글자를 바꾼다 (시그널 연결)
-	player.health_changed.connect(_on_player_health_changed)
-	_on_player_health_changed(player.hp, player.max_hp)
-
-
-func _on_player_health_changed(current: int, maximum: int) -> void:
-	hp_label.text = "HP %d / %d" % [current, maximum]
+	# 2) 플레이어 → HUD 연결 (시그널)
+	player.health_changed.connect(hud.set_health)
+	player.coins_changed.connect(hud.set_coins)
+	hud.set_health(player.hp, player.max_hp)
+	hud.set_coins(player.coins)
