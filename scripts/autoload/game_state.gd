@@ -29,3 +29,14 @@ const ATTRIBUTES := {
 
 var attribute: String = ""  ## 플레이어가 고른 속성 ("solid" / "liquid" / "cosmo")
 var player_name: String = "용사"
+
+# --- 플레이어 상태 (맵을 옮겨 다녀도 유지) ---
+var max_hp: int = 5
+var player_hp: int = -1  ## -1이면 "가득 찬 상태로 시작"
+var coins: int = 0
+
+# --- 맵 이동 ---
+var next_spawn: String = ""  ## 다음 맵에서 플레이어가 나타날 위치 이름 (포탈 id 또는 Spawns의 Marker2D 이름)
+
+# --- 이야기 진행 기록 (예: "intro_done": true) ---
+var flags: Dictionary = {}

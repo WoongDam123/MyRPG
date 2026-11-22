@@ -1,7 +1,7 @@
 extends Control
 ## 프롤로그: 미지의 존재가 나를 불러내고, 세 근원 에너지 중 하나를 고르게 한다.
 
-const NEXT_SCENE := "res://scenes/main.tscn"  # 서장-2에서 시골 마을 장면으로 바뀔 예정
+const NEXT_SCENE := "res://scenes/maps/house.tscn"  # 자갈 마을의 우리 집에서 눈을 뜬다
 const BEING := "???"
 
 const INTRO := [
@@ -101,4 +101,5 @@ func _on_confirm() -> void:
 	await create_tween().tween_property(choice_panel, "modulate:a", 0.0, 0.5).finished
 	choice_panel.hide()
 	await dialogue.play(AFTER[selected])
-	Transition.change_scene(NEXT_SCENE, "그라니아 변방, 볕돌 마을\n\n— 성인식을 앞둔 어느 날 —", Color.WHITE)
+	GameState.next_spawn = "bed"  # 침대 옆에서 시작
+	Transition.change_scene(NEXT_SCENE, "그라니아 변방, 자갈 마을\n\n— 성인식을 앞둔 어느 날 —", Color.WHITE)

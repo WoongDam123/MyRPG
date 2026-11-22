@@ -1,5 +1,6 @@
 extends SceneTree
-# 타일셋(.tres)과 메인 장면(main.tscn)을 만드는 생성기
+# [옛 도구] 4단계에서 바위 숲(당시 main.tscn)을 처음 만들 때 쓴 생성기. 지금은 실행하지 말 것
+# (바위 숲은 scenes/maps/rock_forest.tscn으로 옮겨져 포탈·슬라임 배치가 추가됨)
 const W := 60
 const H := 40
 enum { GRASS, GRASS2, FLOWER, PATH, WATER, TREE, ROCK, BUSH }
@@ -33,7 +34,7 @@ func make_tileset() -> TileSet:
 	return load("res://assets/tiles/tileset.tres")
 
 func _init():
-	var ts := make_tileset()
+	var ts: TileSet = load("res://assets/tiles/tileset.tres")  # 타일셋은 build_tileset.gd가 만든다
 	var rng := RandomNumberGenerator.new(); rng.seed = 2026
 	var main := Node2D.new(); main.name = "Main"
 	main.set_script(load("res://scripts/main.gd"))

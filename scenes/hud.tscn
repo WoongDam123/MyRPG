@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="3_hud"]
 [ext_resource type="Texture2D" path="res://assets/items/coin.png" id="4_coin"]
+[ext_resource type="PackedScene" path="res://scenes/ui/dialogue_box.tscn" id="5_dialogue"]
 
 [ext_resource type="Texture2D" path="res://assets/ui/attack_button.png" id="1_btn"]
 [ext_resource type="Texture2D" path="res://assets/ui/attack_button_pressed.png" id="2_btn_p"]
@@ -55,9 +56,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -200.0
+offset_left = -260.0
 offset_top = -18.0
-offset_right = 200.0
+offset_right = 260.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -66,7 +67,7 @@ modulate = Color(1, 1, 1, 0.7)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 10
-text = "이동: 조이스틱(화면 왼쪽 드래그) / 방향키·WASD   공격: 칼 버튼 / Space·J"
+text = "이동: 조이스틱 / 방향키·WASD    공격·대화: 칼 버튼 / Space·J (누르고 있으면 연속 공격)"
 
 
 [node name="TopLeft" type="VBoxContainer" parent="."]
@@ -99,3 +100,23 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 10
 text = "× 0"
+
+[node name="MapName" type="Label" parent="."]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 24.0
+offset_right = 150.0
+offset_bottom = 46.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.07, 0.05, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 16
+text = "맵 이름"
+horizontal_alignment = 1
+
+[node name="DialogueBox" parent="." groups=["dialogue_box"] instance=ExtResource("5_dialogue")]

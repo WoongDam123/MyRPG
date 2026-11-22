@@ -23,18 +23,21 @@ Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG. 기획은
 
 ## 파일 구조
 - `scenes/prologue.tscn`, `scripts/prologue.gd` — **시작 장면**: 미지의 존재, 속성 선택
-- `scripts/autoload/game_state.gd` — 전역 `GameState`: 속성 정보, 고른 속성 등 게임 전체 데이터
+- `scripts/autoload/game_state.gd` — 전역 `GameState`: 속성, 체력·코인(맵 이동 시 유지), 다음 도착 위치, 이야기 진행 기록(flags)
 - `scripts/autoload/transition.gd` — 전역 `Transition`: 페이드 화면 전환 + 자막
 - `scenes/ui/dialogue_box.tscn`, `scripts/ui/dialogue_box.gd` — 대화창 (한 글자씩, 터치/Space로 넘김)
 - `scripts/ui/starfield.gd` — 반짝이는 우주 배경
-- `scenes/main.tscn` — 메인 화면: Ground(바닥 타일) / World(y-sort: Obstacles 타일 + Player) / HUD
-- `scripts/main.gd` — 카메라 경계 설정, 플레이어 시그널(체력·코인) → HUD 연결
+- `scenes/maps/` — 맵들: `house.tscn`(우리 집) · `village.tscn`(자갈 마을) · `rock_forest.tscn`(바위 숲)
+  - 모든 맵 구조: Ground(바닥 타일) / World(y-sort: Obstacles 타일, 건물·가구, NPC, 포탈, Player) / Spawns / HUD
+- `scripts/map.gd` — 모든 맵 공통: 포탈 도착 위치 배치, 카메라 경계(작은 맵은 가운데), HUD 연결, 첫 방문 이벤트 대사
+- `scenes/portal.tscn`, `scripts/portal.gd` — 포탈: `portal_id` ↔ `target_map` + `target_portal`로 짝을 맞춤
+- `scenes/npc.tscn`, `scripts/npc.gd` — NPC: 가까이 가면 `!` 표시, 공격 버튼으로 대화
 - `assets/tiles/tiles.png`, `tileset.tres` — 잔디·꽃·흙길·물·나무·바위·덤불 타일 (물·나무·바위·덤불은 충돌)
 - `tools/` — 그림·맵 생성 스크립트 (게임 실행과 무관)
 - `scenes/player.tscn` — 플레이어 (CharacterBody2D + AnimatedSprite2D + 충돌 박스)
-- `scripts/player.gd` — 플레이어 이동·애니메이션·공격·체력(피격, 무적, 사망)
+- `scripts/player.gd` — 플레이어 이동·공격(누르고 있으면 연속)·NPC 대화·체력(피격, 무적, 사망)
 - `scenes/slime.tscn`, `scripts/slime.gd` — 슬라임 적 (어슬렁 → 추격, 넉백, 사망 시 아이템 드롭: 하트 25% / 코인 60%)
-- `scenes/hud.tscn`, `scripts/hud.gd` — 화면 UI: 하트 체력, 코인 수, 조이스틱, 공격 버튼, 안내 문구
+- `scenes/hud.tscn`, `scripts/hud.gd` — 화면 UI: 하트 체력, 코인 수, 맵 이름, 대화창, 조이스틱, 공격 버튼, 안내 문구
 - `scenes/pickup.tscn`, `scripts/pickup.gd` — 바닥 아이템(하트: 체력 +1 / 코인), 12초 후 사라짐
 - `assets/items/` — 하트(가득/빈), 코인 그림
 - `assets/ui/`, `assets/effects/` — 공격 버튼, 칼 휘두르기 효과 그림
@@ -55,6 +58,11 @@ Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG. 기획은
 
 ## 기획 진행 (코스모 가이아 서장)
 - [x] 서장-1: 프롤로그 (미지의 존재, 속성 선택)
-- [ ] 서장-2: 볕돌 마을, 집, 부모님 NPC
+- [x] 서장-2: 자갈 마을, 우리 집, 부모님·이웃 NPC, 포탈 맵 이동, 연속 공격
 - [ ] 서장-3~5: 심부름 튜토리얼 (장비 장착 / 상점 / 물약 퀵슬롯)
 - [ ] 서장-6: 성인식 → 모험 출발
+
+## 맵 연결도
+```
+우리 집 ──(house_door ↔ home_door)── 자갈 마을 ──(forest_exit ↔ village_exit)── 바위 숲
+```

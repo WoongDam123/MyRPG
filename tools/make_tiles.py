@@ -1,7 +1,7 @@
 import sys, random, math
 from PIL import Image
 out=sys.argv[1]; random.seed(11)
-T=16; N=8
+T=16; N=15
 img=Image.new("RGBA",(T*N,T),(0,0,0,0))
 def tile(i): return i*T
 def px(i,x,y,c):
@@ -50,5 +50,48 @@ for y in range(T):
         d=math.hypot(x-7.5,(y-9)/0.85)
         if d<=6.5: px(7,x,y,(36,84,40,255) if d>5.5 else (70,135,62,255))
 for (x,y) in [(5,7),(9,8),(7,11)]: px(7,x,y,(200,60,60,255))
+# 8 가로 울타리 / 14 세로 울타리
+WOOD=(150,100,55,255); WD=(95,60,30,255); WL=(185,135,80,255)
+for x in range(T):
+    for y in (6,7,11,12):
+        px(8,x,y,WD if y in (7,12) else WOOD)
+for x0 in (2,12):
+    for y in range(3,15):
+        for x in (x0,x0+1): px(8,x,y,WD if x==x0+1 or y==14 else WL)
+for y in range(T):
+    for x in (6,7,8,9): px(14,x,y,WD if x in (6,9) else WOOD)
+for y0 in (3,11):
+    for y in (y0,y0+1):
+        for x in range(4,12): px(14,x,y,WD if y==y0+1 else WL)
+# 9 나무 바닥
+for y in range(T):
+    for x in range(T):
+        c=(168,118,72,255) if (y//4)%2==0 else (156,108,64,255)
+        if y%4==3: c=(120,82,48,255)
+        if (x+ (y//4)*7)%16==0: c=(120,82,48,255)
+        px(9,x,y,c)
+# 10 벽 윗면(어두운 천장선) / 11 벽면(회벽 + 나무 걸레받이)
+for y in range(T):
+    for x in range(T): px(10,x,y,(62,46,40,255) if y<14 else (40,28,24,255))
+for y in range(T):
+    for x in range(T):
+        c=(222,208,180,255)
+        if y>=12: c=(120,82,48,255) if y<15 else (80,54,30,255)
+        elif (x+y*3)%11==0: c=(208,192,162,255)
+        px(11,x,y,c)
+# 12 밭 (갈아엎은 흙 + 새싹)
+for y in range(T):
+    for x in range(T): px(12,x,y,(110,76,46,255) if y%4<2 else (130,92,58,255))
+for (x,y) in [(3,4),(11,4),(7,12),(14,12),(3,12)]:
+    px(12,x,y,(90,170,70,255)); px(12,x-1,y-1,(110,190,80,255)); px(12,x+1,y-1,(110,190,80,255))
+# 13 자갈길
+for y in range(T):
+    for x in range(T): px(13,x,y,(150,140,125,255))
+random.seed(13)
+for _ in range(16):
+    cx,cy=random.randrange(1,15),random.randrange(1,15); r=random.choice([1,1,2])
+    col=random.choice([(185,178,165,255),(120,112,100,255),(170,162,148,255)])
+    for y in range(cy-r,cy+r):
+        for x in range(cx-r,cx+r+1): px(13,x,y,col)
 img.save(out+"/tiles/tiles.png")
 

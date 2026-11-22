@@ -7,6 +7,8 @@ const HEART_EMPTY := preload("res://assets/items/heart_empty.png")
 
 @onready var hearts: HBoxContainer = $TopLeft/Hearts
 @onready var coin_label: Label = $TopLeft/Coins/Label
+@onready var map_name_label: Label = $MapName
+@onready var dialogue = $DialogueBox
 
 
 func set_health(current: int, maximum: int) -> void:
@@ -36,3 +38,14 @@ func _pop(node: Control) -> void:
 	node.pivot_offset = node.size / 2
 	node.scale = Vector2(1.5, 1.5)
 	create_tween().tween_property(node, "scale", Vector2.ONE, 0.2)
+
+
+## 맵에 들어올 때 이름을 화면 위에 잠깐 보여 준다
+func show_map_name(text: String) -> void:
+	map_name_label.text = text
+	map_name_label.modulate.a = 0.0
+	var tween := create_tween()
+	tween.tween_interval(0.6)
+	tween.tween_property(map_name_label, "modulate:a", 1.0, 0.5)
+	tween.tween_interval(1.8)
+	tween.tween_property(map_name_label, "modulate:a", 0.0, 0.8)
