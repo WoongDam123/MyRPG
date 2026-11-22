@@ -1,6 +1,6 @@
-# MyRPG
+# 코스모 가이아 (MyRPG)
 
-Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG.
+Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG. 기획은 [docs/기획서.md](docs/기획서.md) 참고.
 
 ## 열어 보는 방법
 1. GitHub Desktop으로 이 저장소를 Clone(처음) 또는 Pull(이후)
@@ -22,6 +22,11 @@ Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG.
 - 가로 화면 고정, 텍스처 필터 Nearest (픽셀 아트)
 
 ## 파일 구조
+- `scenes/prologue.tscn`, `scripts/prologue.gd` — **시작 장면**: 미지의 존재, 속성 선택
+- `scripts/autoload/game_state.gd` — 전역 `GameState`: 속성 정보, 고른 속성 등 게임 전체 데이터
+- `scripts/autoload/transition.gd` — 전역 `Transition`: 페이드 화면 전환 + 자막
+- `scenes/ui/dialogue_box.tscn`, `scripts/ui/dialogue_box.gd` — 대화창 (한 글자씩, 터치/Space로 넘김)
+- `scripts/ui/starfield.gd` — 반짝이는 우주 배경
 - `scenes/main.tscn` — 메인 화면: Ground(바닥 타일) / World(y-sort: Obstacles 타일 + Player) / HUD
 - `scripts/main.gd` — 카메라 경계 설정, 플레이어 시그널(체력·코인) → HUD 연결
 - `assets/tiles/tiles.png`, `tileset.tres` — 잔디·꽃·흙길·물·나무·바위·덤불 타일 (물·나무·바위·덤불은 충돌)
@@ -47,3 +52,9 @@ Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG.
 
 - 플레이어 `AttackHitbox`(공격 판정)와 `Hurtbox`(피격 판정)는 3번(적)을 감지
 - 플레이어는 적과 몸으로 부딪히지 않고 통과하지만, 닿으면 피해를 받음
+
+## 기획 진행 (코스모 가이아 서장)
+- [x] 서장-1: 프롤로그 (미지의 존재, 속성 선택)
+- [ ] 서장-2: 볕돌 마을, 집, 부모님 NPC
+- [ ] 서장-3~5: 심부름 튜토리얼 (장비 장착 / 상점 / 물약 퀵슬롯)
+- [ ] 서장-6: 성인식 → 모험 출발

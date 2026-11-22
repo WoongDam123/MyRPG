@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="MyRPG"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/prologue.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[autoload]
+
+GameState="*res://scripts/autoload/game_state.gd"
+Transition="*res://scripts/autoload/transition.gd"
 
 [display]
 
