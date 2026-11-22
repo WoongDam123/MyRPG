@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_script"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/player_frames.tres" id="2_frames"]
+[ext_resource type="Texture2D" path="res://assets/effects/slash.png" id="3_slash"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_feet"]
 size = Vector2(10, 6)
@@ -14,6 +15,10 @@ script = ExtResource("1_script")
 position = Vector2(0, -8)
 sprite_frames = ExtResource("2_frames")
 animation = &"idle_down"
+
+[node name="Slash" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("3_slash")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3)

@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/tiles/grass.png" id="1_grass"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="3_hud"]
 
 [node name="Main" type="Node2D"]
 
@@ -19,7 +20,9 @@ position = Vector2(320, 188)
 [node name="Hint" type="Label" parent="."]
 offset_left = 8.0
 offset_top = 4.0
-offset_right = 300.0
+offset_right = 620.0
 offset_bottom = 24.0
 theme_override_font_sizes/font_size = 10
-text = "방향키 또는 WASD로 이동"
+text = "이동: 조이스틱(화면 왼쪽 드래그) / 방향키·WASD   공격: 칼 버튼 / Space·J"
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]

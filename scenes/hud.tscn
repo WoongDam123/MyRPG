@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/attack_button.png" id="1_btn"]
+[ext_resource type="Texture2D" path="res://assets/ui/attack_button_pressed.png" id="2_btn_p"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_btn"]
+radius = 30.0
+
+[node name="HUD" type="CanvasLayer"]
+
+[node name="Joystick" type="VirtualJoystick" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = -200.0
+offset_right = 260.0
+offset_bottom = 0.0
+grow_vertical = 0
+joystick_mode = 1
+joystick_size = 70.0
+tip_size = 30.0
+initial_offset_ratio = Vector2(0.3, 0.7)
+action_left = &"move_left"
+action_right = &"move_right"
+action_up = &"move_up"
+action_down = &"move_down"
+
+[node name="AttackArea" type="Control" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -88.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="AttackButton" type="TouchScreenButton" parent="AttackArea"]
+position = Vector2(16, 16)
+texture_normal = ExtResource("1_btn")
+texture_pressed = ExtResource("2_btn_p")
+shape = SubResource("CircleShape2D_btn")
+action = &"attack"
