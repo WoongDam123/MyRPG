@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://scripts/hud.gd" id="3_hud"]
 [ext_resource type="Texture2D" path="res://assets/items/coin.png" id="4_coin"]
 [ext_resource type="PackedScene" path="res://scenes/ui/dialogue_box.tscn" id="5_dialogue"]
+[ext_resource type="Texture2D" path="res://assets/ui/bag.png" id="6_bag"]
+[ext_resource type="Script" path="res://scripts/ui/inventory.gd" id="7_inv"]
 
 [ext_resource type="Texture2D" path="res://assets/ui/attack_button.png" id="1_btn"]
 [ext_resource type="Texture2D" path="res://assets/ui/attack_button_pressed.png" id="2_btn_p"]
@@ -118,5 +120,76 @@ theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 16
 text = "맵 이름"
 horizontal_alignment = 1
+
+[node name="TopRight" type="HBoxContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -250.0
+offset_top = 6.0
+offset_right = -8.0
+offset_bottom = 38.0
+grow_horizontal = 0
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="QuestButton" type="Button" parent="TopRight"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 10
+text = "목표"
+alignment = 2
+autowrap_mode = 3
+
+[node name="BagButton" type="TextureButton" parent="TopRight"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture_normal = ExtResource("6_bag")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="AutoButton" type="Button" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -136.0
+offset_top = -70.0
+offset_right = -92.0
+offset_bottom = -42.0
+grow_horizontal = 0
+grow_vertical = 0
+toggle_mode = true
+theme_override_font_sizes/font_size = 10
+text = "자동"
+
+[node name="Toast" type="Label" parent="."]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -160.0
+offset_top = 52.0
+offset_right = 160.0
+offset_bottom = 70.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.7, 1)
+theme_override_colors/font_outline_color = Color(0.15, 0.1, 0.05, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 12
+text = "알림"
+horizontal_alignment = 1
+
+[node name="Inventory" type="Control" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_inv")
 
 [node name="DialogueBox" parent="." groups=["dialogue_box"] instance=ExtResource("5_dialogue")]

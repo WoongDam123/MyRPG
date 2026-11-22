@@ -9,9 +9,10 @@ Godot는 이 폴더를 무시합니다(`.gdignore`). 게임 실행에는 필요 
 | `make_ui.py`, `make_items.py`, `make_enemies.py` | 공격 버튼·칼 효과, 하트·코인, 슬라임 |
 | `make_prologue.py` | 미지의 존재, 속성 구슬 |
 | `make_village_art.py` | 집 3채, 우물·가구, 포탈, NPC(엄마·아빠·이웃) |
+| `make_errand_art.py` | 창고 건물, 짐 상자·건초·보물 상자, 아이템 아이콘, 가방 버튼 |
 | `build_frames.gd`, `build_slime_frames.gd` | 애니메이션(SpriteFrames) |
 | `build_tileset.gd` | 타일셋 + 충돌 모양 |
-| `build_maps.gd` | **우리 집**, **자갈 마을** 맵 생성 |
+| `build_maps.gd` | **우리 집**, **자갈 마을**, **창고** 맵 생성 |
 | `build_map.gd` | (옛 도구) 바위 숲 최초 생성용 — 실행 금지 |
 
-⚠️ `build_maps.gd`를 다시 실행하면 `house.tscn`, `village.tscn`이 덮어써집니다. Godot 에디터에서 맵을 직접 고친 뒤에는 실행하지 마세요.
+⚠️ `build_maps.gd`를 다시 실행하면 `house.tscn`, `village.tscn`, `barn.tscn`이 덮어써집니다. Godot 에디터에서 맵을 직접 고친 뒤에는 실행하지 마세요.

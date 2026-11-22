@@ -15,8 +15,13 @@ extends Node2D
 @onready var camera: Camera2D = $World/Player/Camera2D
 @onready var hud: CanvasLayer = $HUD
 
+var map_id: String = ""  ## 맵 파일 이름 (예: "village")
+var _astar: AStarGrid2D  ## 자동 이동용 길찾기 격자 (처음 필요할 때 만든다)
+
 
 func _ready() -> void:
+	add_to_group("map")
+	map_id = scene_file_path.get_file().get_basename()
 	_place_player()
 	camera.zoom = Vector2(camera_zoom, camera_zoom)
 	_update_camera_limits()
@@ -32,6 +37,11 @@ func _ready() -> void:
 		hud.show_map_name(map_name)
 	if enter_event_flag != "" and not GameState.flags.get(enter_event_flag, false):
 		_play_enter_event()
+	elif GameState.auto_move:
+		# 퀘스트 자동 이동 중에 포탈을 타고 왔다면 계속 이어서 간다
+		await get_tree().create_timer(0.9).timeout
+		if GameState.auto_move:
+			player.autopilot.start_quest_move()
 
 
 ## GameState.next_spawn 이름과 같은 포탈/마커를 찾아 플레이어를 옮긴다
@@ -77,3 +87,64 @@ func _play_enter_event() -> void:
 	await hud.dialogue.play(enter_event_lines)
 	GameState.flags[enter_event_flag] = true
 	player.set_controls(true)
+
+
+
+# ================= 자동 이동용 길찾기 =================
+
+## from에서 to까지 걸어갈 수 있는 길(점 목록)을 찾는다. 못 찾으면 빈 배열.
+func find_path(from: Vector2, to: Vector2) -> PackedVector2Array:
+	if _astar == null:
+		_build_grid()
+	var a := _nearest_free(Vector2i((from / 16.0).floor()))
+	var b := _nearest_free(Vector2i((to / 16.0).floor()))
+	if a == Vector2i(-9999, -9999) or b == Vector2i(-9999, -9999):
+		return PackedVector2Array()
+	var cells := _astar.get_id_path(a, b)
+	var points := PackedVector2Array()
+	for c in cells:
+		points.append(Vector2(c) * 16.0 + Vector2(8, 10))
+	if not points.is_empty():
+		points.remove_at(0)  # 첫 칸은 지금 서 있는 곳
+	return points
+
+
+## 칸마다 "벽·나무·건물·NPC가 있는지" 물리 엔진에 물어 막힌 칸을 표시한다
+func _build_grid() -> void:
+	_astar = AStarGrid2D.new()
+	_astar.region = ground.get_used_rect()
+	_astar.cell_size = Vector2(16, 16)
+	_astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+	_astar.update()
+	var space := get_world_2d().direct_space_state
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(11, 9)
+	var q := PhysicsShapeQueryParameters2D.new()
+	q.shape = shape
+	q.collision_mask = 1  # 지형·건물·NPC
+	var r := _astar.region
+	for y in range(r.position.y, r.end.y):
+		for x in range(r.position.x, r.end.x):
+			q.transform = Transform2D(0, Vector2(x * 16 + 8, y * 16 + 10))
+			if not space.intersect_shape(q, 1).is_empty():
+				_astar.set_point_solid(Vector2i(x, y))
+
+
+func _nearest_free(c: Vector2i) -> Vector2i:
+	for radius in 4:
+		var best := Vector2i(-9999, -9999)
+		for dy in range(-radius, radius + 1):
+			for dx in range(-radius, radius + 1):
+				var p := c + Vector2i(dx, dy)
+				if _astar.is_in_boundsv(p) and not _astar.is_point_solid(p):
+					if best == Vector2i(-9999, -9999) or Vector2(p - c).length() < Vector2(best - c).length():
+						best = p
+		if best != Vector2i(-9999, -9999):
+			return best
+	return Vector2i(-9999, -9999)
+
+
+## 이름으로 이 맵의 물건(NPC·상자·포탈) 찾기
+func find_target(target_name: String) -> Node2D:
+	var n := find_child(target_name, true, false)
+	return n as Node2D

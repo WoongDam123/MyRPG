@@ -17,6 +17,7 @@ var _collected: bool = false
 
 
 func _ready() -> void:
+	add_to_group("pickups")
 	sprite.texture = TEXTURES[kind]
 	body_entered.connect(_on_body_entered)
 	# 떨어질 때 톡 튀어 오르는 연출

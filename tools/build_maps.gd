@@ -11,6 +11,7 @@ func _init():
 	rng.seed = 777
 	build_house()
 	build_village()
+	build_barn()
 	quit()
 
 # ---------- 공통 도우미 ----------
@@ -45,10 +46,10 @@ func prop(m: Dictionary, pname: String, tex: String, pos: Vector2, col: Vector2)
 	cs.shape = shape; cs.position = Vector2(0, -col.y / 2.0)
 	add(body, cs, m.root)
 
-func npc(m: Dictionary, pname: String, display: String, tex: String, pos: Vector2, facing: String, lines: Array[String]) -> void:
+func npc(m: Dictionary, pname: String, display: String, tex: String, pos: Vector2, facing: String, lines: Array[String], story_id := "") -> void:
 	var n: Node2D = load("res://scenes/npc.tscn").instantiate()
 	n.name = pname; n.position = pos
-	n.npc_name = display; n.texture = load(tex); n.facing = facing; n.lines = lines
+	n.npc_name = display; n.texture = load(tex); n.facing = facing; n.lines = lines; n.story_id = story_id
 	add(m.world, n, m.root)
 
 func portal(m: Dictionary, id: String, pos: Vector2, target_map: String, target_portal: String, label: String, offset: Vector2) -> void:
@@ -95,7 +96,7 @@ func build_house() -> void:
 	npc(m, "Mom", "엄마", "res://assets/npcs/mom.png", Vector2(266, 92), "right", [
 		"아빠는 집 앞 밭에 계셔. 문 앞의 빛나는 곳으로 나가면 된단다.",
 		"내일이면 성인식이라니… 엄마는 아직도 네가 아기 같은데.",
-	])
+	], "mom")
 	portal(m, "house_door", Vector2(160, 186), "res://scenes/maps/village.tscn", "home_door", "", Vector2(0, -24))
 	marker(m, "bed", Vector2(40, 92))
 	m.root.enter_event_flag = "intro_done"
@@ -124,9 +125,11 @@ func build_village() -> void:
 	mark.call(road, Rect2i(13, 8, 2, 8))      # 우리 집 → 큰길
 	mark.call(road, Rect2i(33, 8, 2, 8))      # 잡화점 → 큰길
 	mark.call(road, Rect2i(9, 16, 2, 6))      # 이웃집 → 큰길
+	mark.call(road, Rect2i(19, 8, 2, 4))      # 창고 → 광장
 	# 건물·밭 자리 (나무가 자라지 않게)
 	mark.call(reserved, Rect2i(8, 2, 13, 7))  # 우리 집
 	mark.call(reserved, Rect2i(28, 2, 13, 7)) # 잡화점
+	mark.call(reserved, Rect2i(17, 2, 7, 7))  # 창고
 	mark.call(reserved, Rect2i(4, 16, 13, 7)) # 이웃집
 	mark.call(reserved, Rect2i(28, 18, 14, 10)) # 밭 + 울타리
 	mark.call(reserved, Rect2i(44, 13, 4, 6)) # 동쪽 출구
@@ -163,13 +166,14 @@ func build_village() -> void:
 	prop(m, "HousePlayer", "res://assets/props/house_player.png", Vector2(224, 128), Vector2(64, 30))
 	prop(m, "HouseShop", "res://assets/props/house_shop.png", Vector2(544, 128), Vector2(64, 30))
 	prop(m, "HouseNeighbor", "res://assets/props/house_neighbor.png", Vector2(160, 352), Vector2(64, 30))
+	prop(m, "Barn", "res://assets/props/barn.png", Vector2(320, 128), Vector2(52, 26))
 	prop(m, "Well", "res://assets/props/well.png", Vector2(392, 200), Vector2(20, 10))
 	# 사람들
 	npc(m, "Dad", "아빠", "res://assets/npcs/dad.png", Vector2(560, 360), "down", [
 		"오, 우리 집 잠꾸러기 왔구나!",
 		"내일이면 너도 어엿한 그라니아의 성인이지. 시간 참 빠르구나.",
 		"성인식 전에 몇 가지 부탁할 게 있단다. 준비가 되면 다시 이야기하자꾸나.",
-	])
+	], "dad")
 	npc(m, "Bori", "보리", "res://assets/npcs/neighbor.png", Vector2(424, 216), "left", [
 		"안녕! 내일 성인식이지? 부럽다~",
 		"나도 빨리 어른이 돼서 바위 숲 너머로 가 보고 싶어.",
@@ -181,8 +185,36 @@ func build_village() -> void:
 	])
 	# 포탈
 	portal(m, "home_door", Vector2(224, 138), "res://scenes/maps/house.tscn", "house_door", "우리 집", Vector2(0, 22))
+	portal(m, "barn_door", Vector2(320, 138), "res://scenes/maps/barn.tscn", "barn_out", "창고", Vector2(0, 22))
 	portal(m, "forest_exit", Vector2(744, 256), "res://scenes/maps/rock_forest.tscn", "village_exit", "바위 숲", Vector2(-26, 0))
 	finish(m, Vector2(224, 164), "res://scenes/maps/village.tscn")
+
+# ---------- 창고 (실내, 12 x 8 타일) ----------
+func build_barn() -> void:
+	var m := new_map("창고", 2.0)
+	for y in 8:
+		for x in 12:
+			var t := FLOOR
+			if y == 0 or x == 0 or x == 11 or (y == 7 and not x in [5, 6]):
+				t = WALL_TOP
+			elif y == 1:
+				t = WALL
+			cell(m.ground, x, y, t)
+	for pos in [Vector2(24, 48), Vector2(40, 48), Vector2(24, 64), Vector2(168, 104)]:
+		prop(m, "Crate", "res://assets/props/crate.png", pos, Vector2(14, 10))
+	prop(m, "Hay", "res://assets/props/hay.png", Vector2(160, 52), Vector2(18, 10))
+	prop(m, "Hay2", "res://assets/props/hay.png", Vector2(140, 52), Vector2(18, 10))
+	var chest: Node2D = load("res://scenes/chest.tscn").instantiate()
+	chest.name = "Chest"; chest.position = Vector2(96, 50)
+	chest.chest_id = "dad_gear"
+	chest.items = ["wooden_sword", "leather_armor"] as Array[String]
+	chest.required_quest = "errand_equip"
+	chest.locked_text = "(아빠의 물건이 든 상자다. 허락 없이 열면 혼날 것 같다.)"
+	chest.after_text = ["(오른쪽 위의 가방 버튼을 눌러 장착해 보자.)"] as Array[String]
+	add(m.world, chest, m.root)
+	portal(m, "barn_out", Vector2(96, 122), "res://scenes/maps/village.tscn", "barn_door", "", Vector2(0, -22))
+	finish(m, Vector2(96, 100), "res://scenes/maps/barn.tscn")
+
 
 func _far_from(dict: Dictionary, p: Vector2i, dist: int) -> bool:
 	for dy in range(-dist, dist + 1):

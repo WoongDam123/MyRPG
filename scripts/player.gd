@@ -9,7 +9,6 @@ signal coins_changed(total: int)  ## 코인 개수가 바뀔 때
 
 @export var speed: float = 80.0  ## 1초에 움직이는 픽셀 수
 @export var attack_duration: float = 0.25  ## 칼 휘두르기 한 번에 걸리는 시간(초)
-@export var attack_damage: int = 1  ## 칼 한 번에 주는 피해
 @export var invincible_time: float = 1.0  ## 맞은 뒤 무적 시간(초)
 
 var max_hp: int = 5  ## 최대 체력 (GameState에서 가져온다)
@@ -29,6 +28,7 @@ var _hit_this_swing: Array = []  ## 한 번 휘두를 때 같은 적을 두 번 
 @onready var attack_hitbox: Area2D = $AttackHitbox
 @onready var attack_shape: CollisionShape2D = $AttackHitbox/CollisionShape2D
 @onready var hurtbox: Area2D = $Hurtbox
+@onready var autopilot: Node = $AutoPilot  ## 자동 사냥·자동 이동
 
 ## 방향별 칼 휘두르기 위치와 회전 (발밑이 기준점, 몸 중심은 y = -8)
 const SLASH_POSE := {
@@ -41,8 +41,9 @@ const SLASH_POSE := {
 
 func _ready() -> void:
 	# 체력·코인은 맵을 옮겨도 유지되도록 GameState에 보관한다
-	max_hp = GameState.max_hp
+	max_hp = GameState.get_max_hp()
 	hp = GameState.player_hp if GameState.player_hp >= 0 else max_hp
+	GameState.stats_changed.connect(_on_stats_changed)
 	coins = GameState.coins
 	add_to_group("player")
 	attack_hitbox.body_entered.connect(_on_attack_hit)
@@ -60,9 +61,17 @@ func _physics_process(delta: float) -> void:
 
 	var input_dir: Vector2 = Vector2.ZERO
 	if controls_enabled:
+		var manual := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		if manual != Vector2.ZERO:
+			autopilot.on_manual_input()  # 직접 조작하면 자동 이동은 멈춘다
 		_handle_action_button()
+		var auto_dir: Vector2 = autopilot.get_move_dir(delta)
+		var auto_attack: Vector2 = autopilot.get_attack_dir()
+		if auto_attack != Vector2.ZERO and not is_attacking:
+			face_toward(global_position + auto_attack)
+			_attack()
 		if not is_attacking:
-			input_dir = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+			input_dir = manual if manual != Vector2.ZERO else auto_dir
 
 	velocity = input_dir * speed + knockback
 	knockback = knockback.lerp(Vector2.ZERO, 12.0 * delta)
@@ -101,11 +110,52 @@ func _find_interactable() -> Node2D:
 	return best
 
 
+## 어떤 위치를 바라보게 한다 (자동 공격·말 걸기용)
+func face_toward(pos: Vector2) -> void:
+	var d := pos - global_position
+	if absf(d.x) > absf(d.y):
+		facing = "right" if d.x > 0 else "left"
+	else:
+		facing = "down" if d.y > 0 else "up"
+
+
+## 장비가 바뀌어 최대 체력이 달라졌을 때
+func _on_stats_changed() -> void:
+	var new_max: int = GameState.get_max_hp()
+	if new_max > max_hp:
+		hp += new_max - max_hp  # 늘어난 만큼 바로 채워 준다
+	max_hp = new_max
+	hp = mini(hp, max_hp)
+	GameState.player_hp = hp
+	health_changed.emit(hp, max_hp)
+
+
+## 체력 회복 (물약 등)
+func heal(amount: int) -> void:
+	hp = mini(hp + amount, max_hp)
+	GameState.player_hp = hp
+	health_changed.emit(hp, max_hp)
+
+
+## 가방에서 소모품 사용. 쓸 수 없으면 false
+func use_item(id: String) -> bool:
+	var item: Dictionary = GameState.ITEMS[id]
+	if item.type != "consumable" or GameState.inventory.get(id, 0) <= 0:
+		return false
+	if item.has("heal"):
+		if hp >= max_hp:
+			return false
+		heal(item.heal)
+	GameState.remove_item(id)
+	return true
+
+
 ## 대화·화면 전환 중에는 조작을 끈다
 func set_controls(enabled: bool) -> void:
 	controls_enabled = enabled
 	if not enabled:
 		velocity = Vector2.ZERO
+		knockback = Vector2.ZERO
 		sprite.play("idle_" + facing)
 	else:
 		_wait_attack_release = true
@@ -151,7 +201,7 @@ func _attack() -> void:
 func _on_attack_hit(body: Node2D) -> void:
 	if body.is_in_group("enemies") and body not in _hit_this_swing:
 		_hit_this_swing.append(body)
-		body.take_damage(attack_damage, global_position)
+		body.take_damage(GameState.get_attack(), global_position)
 
 
 ## 몸(Hurtbox)에 적이 닿아 있으면 피해를 받는다

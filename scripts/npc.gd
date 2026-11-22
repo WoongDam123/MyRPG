@@ -6,6 +6,7 @@ extends StaticBody2D
 @export var texture: Texture2D
 @export_multiline var lines: Array[String] = ["안녕!"]  ## 대화 내용 (한 칸이 한 장면)
 @export_enum("down", "left", "right", "up") var facing: String = "down"
+@export var story_id: String = ""  ## 비어 있지 않으면 Story가 상황에 맞는 대사를 정한다 (lines 대신)
 
 const FRAME := {"down": 0, "left": 1, "right": 2, "up": 3}
 
@@ -38,9 +39,12 @@ func interact(player: Node2D) -> void:
 		sprite.frame = FRAME["down"] if d.y > 0 else FRAME["up"]
 	player.set_controls(false)
 	var dialogue = get_tree().get_first_node_in_group("dialogue_box")
+	var texts: Array = Story.get_lines(story_id) if story_id != "" else Array(lines)
 	var script_lines: Array = []
-	for text in lines:
+	for text in texts:
 		script_lines.append({"name": npc_name, "text": text})
 	await dialogue.play(script_lines)
+	if story_id != "":
+		Story.after_talk(story_id)
 	sprite.frame = FRAME[facing]
 	player.set_controls(true)
