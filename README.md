@@ -9,7 +9,7 @@ Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG.
 
 ## 개발 단계
 - [x] 1단계: 개발 환경 준비 (모바일 화면 설정)
-- [ ] 2단계: 캐릭터 띄우고 움직이기
+- [x] 2단계: 캐릭터 띄우고 움직이기 (방향키/WASD, 4방향 걷기 애니메이션)
 - [ ] 3단계: 모바일 조작 (가상 조이스틱, 공격 버튼)
 - [ ] 4단계: 맵 (타일맵, 충돌, 카메라)
 - [ ] 5단계: 전투 (공격, 적 AI, 체력)
@@ -20,3 +20,11 @@ Godot 4.7.2로 만드는 모바일(안드로이드) 탑뷰 액션 RPG.
 - 렌더러: Compatibility (저사양 휴대폰 호환)
 - 기준 해상도 640×360, stretch `canvas_items` / `expand`
 - 가로 화면 고정, 텍스처 필터 Nearest (픽셀 아트)
+
+## 파일 구조
+- `scenes/main.tscn` — 메인 화면 (잔디 배경 + 플레이어)
+- `scenes/player.tscn` — 플레이어 (CharacterBody2D + AnimatedSprite2D + 충돌 박스)
+- `scripts/player.gd` — 플레이어 이동·애니메이션 코드
+- `assets/sprites/player.png` — 플레이어 그림 (16×16, 4방향 × 3프레임 임시 그림)
+- `assets/sprites/player_frames.tres` — 애니메이션 묶음 (idle_*/walk_* × down/left/right/up)
+- 입력 액션: `move_left/right/up/down` (방향키 + WASD) — 프로젝트 설정 → 입력 맵
