@@ -47,7 +47,9 @@ func _ready() -> void:
 		add_to_group("bosses")
 	player = get_tree().get_first_node_in_group("player")
 	sprite.play("bounce")
-	sprite.frame = randi() % 2
+	sprite.frame = randi() % 4
+	if is_boss:
+		$Shadow.scale = Vector2(2.4, 2.4)  # 큰 몸집에 맞는 그림자
 	_dash_timer = dash_interval
 
 

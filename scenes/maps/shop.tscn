@@ -1,133 +1,159 @@
 [gd_scene format=4]
 
-[ext_resource type="Script" path="res://scripts/map.gd" id="1_uw6gw"]
-[ext_resource type="TileSet" path="res://assets/tiles/tileset.tres" id="2_klco8"]
-[ext_resource type="Texture2D" path="res://assets/props/counter.png" id="3_bw7wb"]
-[ext_resource type="Texture2D" path="res://assets/props/shelf.png" id="4_7c5ph"]
-[ext_resource type="Texture2D" path="res://assets/props/crate.png" id="5_mhph4"]
-[ext_resource type="Texture2D" path="res://assets/props/plant.png" id="6_h7rr4"]
-[ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="7_shkxf"]
-[ext_resource type="Script" path="res://scripts/npc.gd" id="8_6irce"]
-[ext_resource type="Texture2D" path="res://assets/npcs/dad.png" id="9_4e6ml"]
-[ext_resource type="PackedScene" path="res://scenes/portal.tscn" id="10_gh2ma"]
-[ext_resource type="Script" path="res://scripts/portal.gd" id="11_f4wjt"]
-[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="12_0vnak"]
-[ext_resource type="Script" path="res://scripts/player.gd" id="13_tiexo"]
-[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="14_a3ur4"]
-[ext_resource type="Script" path="res://scripts/hud.gd" id="15_oa77k"]
+[ext_resource type="Script" path="res://scripts/map.gd" id="1_7c5ph"]
+[ext_resource type="TileSet" path="res://assets/tiles/tileset.tres" id="2_mhph4"]
+[ext_resource type="Texture2D" path="res://assets/effects/shadow_xl.png" id="3_h7rr4"]
+[ext_resource type="Texture2D" path="res://assets/props/counter.png" id="4_shkxf"]
+[ext_resource type="Texture2D" path="res://assets/effects/shadow_l.png" id="5_6irce"]
+[ext_resource type="Texture2D" path="res://assets/props/shelf.png" id="6_4e6ml"]
+[ext_resource type="Texture2D" path="res://assets/effects/shadow_m.png" id="7_gh2ma"]
+[ext_resource type="Texture2D" path="res://assets/props/crate.png" id="8_f4wjt"]
+[ext_resource type="Texture2D" path="res://assets/props/plant.png" id="9_0vnak"]
+[ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="10_tiexo"]
+[ext_resource type="Script" path="res://scripts/npc.gd" id="11_a3ur4"]
+[ext_resource type="Texture2D" path="res://assets/npcs/shopkeeper.png" id="12_oa77k"]
+[ext_resource type="PackedScene" path="res://scenes/portal.tscn" id="13_h3nd6"]
+[ext_resource type="Script" path="res://scripts/portal.gd" id="14_uxbjs"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="15_48ymn"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="16_ygdr3"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="17_afepp"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="18_qxjul"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_h3nd6"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sr45a"]
 size = Vector2(48, 10)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_uxbjs"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4q1of"]
 size = Vector2(20, 10)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_48ymn"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cmexy"]
 size = Vector2(20, 10)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ygdr3"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bgfgc"]
 size = Vector2(14, 10)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_afepp"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_13ic6"]
 size = Vector2(10, 6)
 
-[node name="Map" type="Node2D" unique_id=449870407]
-script = ExtResource("1_uw6gw")
+[node name="Map" type="Node2D" unique_id=156818145]
+script = ExtResource("1_7c5ph")
 map_name = "잡화점"
 camera_zoom = 2.0
+fx_profile = "indoor"
 
-[node name="Ground" type="TileMapLayer" parent="." unique_id=782701178]
+[node name="Ground" type="TileMapLayer" parent="." unique_id=452871139]
 tile_map_data = PackedByteArray("AAAAAAAAAAAKAAAAAAABAAAAAAAKAAAAAAACAAAAAAAKAAAAAAADAAAAAAAKAAAAAAAEAAAAAAAKAAAAAAAFAAAAAAAKAAAAAAAGAAAAAAAKAAAAAAAHAAAAAAAKAAAAAAAIAAAAAAAKAAAAAAAJAAAAAAAKAAAAAAAKAAAAAAAKAAAAAAALAAAAAAAKAAAAAAAMAAAAAAAKAAAAAAANAAAAAAAKAAAAAAAAAAEAAAAKAAAAAAABAAEAAAALAAAAAAACAAEAAAALAAAAAAADAAEAAAALAAAAAAAEAAEAAAALAAAAAAAFAAEAAAALAAAAAAAGAAEAAAALAAAAAAAHAAEAAAALAAAAAAAIAAEAAAALAAAAAAAJAAEAAAALAAAAAAAKAAEAAAALAAAAAAALAAEAAAALAAAAAAAMAAEAAAALAAAAAAANAAEAAAAKAAAAAAAAAAIAAAAKAAAAAAABAAIAAAAJAAAAAAACAAIAAAAJAAAAAAADAAIAAAAJAAAAAAAEAAIAAAAJAAAAAAAFAAIAAAAJAAAAAAAGAAIAAAAJAAAAAAAHAAIAAAAJAAAAAAAIAAIAAAAJAAAAAAAJAAIAAAAJAAAAAAAKAAIAAAAJAAAAAAALAAIAAAAJAAAAAAAMAAIAAAAJAAAAAAANAAIAAAAKAAAAAAAAAAMAAAAKAAAAAAABAAMAAAAJAAAAAAACAAMAAAAJAAAAAAADAAMAAAAJAAAAAAAEAAMAAAAJAAAAAAAFAAMAAAAJAAAAAAAGAAMAAAAJAAAAAAAHAAMAAAAJAAAAAAAIAAMAAAAJAAAAAAAJAAMAAAAJAAAAAAAKAAMAAAAJAAAAAAALAAMAAAAJAAAAAAAMAAMAAAAJAAAAAAANAAMAAAAKAAAAAAAAAAQAAAAKAAAAAAABAAQAAAAJAAAAAAACAAQAAAAJAAAAAAADAAQAAAAJAAAAAAAEAAQAAAAJAAAAAAAFAAQAAAAJAAAAAAAGAAQAAAAJAAAAAAAHAAQAAAAJAAAAAAAIAAQAAAAJAAAAAAAJAAQAAAAJAAAAAAAKAAQAAAAJAAAAAAALAAQAAAAJAAAAAAAMAAQAAAAJAAAAAAANAAQAAAAKAAAAAAAAAAUAAAAKAAAAAAABAAUAAAAJAAAAAAACAAUAAAAJAAAAAAADAAUAAAAJAAAAAAAEAAUAAAAJAAAAAAAFAAUAAAAJAAAAAAAGAAUAAAAJAAAAAAAHAAUAAAAJAAAAAAAIAAUAAAAJAAAAAAAJAAUAAAAJAAAAAAAKAAUAAAAJAAAAAAALAAUAAAAJAAAAAAAMAAUAAAAJAAAAAAANAAUAAAAKAAAAAAAAAAYAAAAKAAAAAAABAAYAAAAJAAAAAAACAAYAAAAJAAAAAAADAAYAAAAJAAAAAAAEAAYAAAAJAAAAAAAFAAYAAAAJAAAAAAAGAAYAAAAJAAAAAAAHAAYAAAAJAAAAAAAIAAYAAAAJAAAAAAAJAAYAAAAJAAAAAAAKAAYAAAAJAAAAAAALAAYAAAAJAAAAAAAMAAYAAAAJAAAAAAANAAYAAAAKAAAAAAAAAAcAAAAKAAAAAAABAAcAAAAJAAAAAAACAAcAAAAJAAAAAAADAAcAAAAJAAAAAAAEAAcAAAAJAAAAAAAFAAcAAAAJAAAAAAAGAAcAAAAJAAAAAAAHAAcAAAAJAAAAAAAIAAcAAAAJAAAAAAAJAAcAAAAJAAAAAAAKAAcAAAAJAAAAAAALAAcAAAAJAAAAAAAMAAcAAAAJAAAAAAANAAcAAAAKAAAAAAAAAAgAAAAKAAAAAAABAAgAAAAKAAAAAAACAAgAAAAKAAAAAAADAAgAAAAKAAAAAAAEAAgAAAAKAAAAAAAFAAgAAAAKAAAAAAAGAAgAAAAJAAAAAAAHAAgAAAAJAAAAAAAIAAgAAAAKAAAAAAAJAAgAAAAKAAAAAAAKAAgAAAAKAAAAAAALAAgAAAAKAAAAAAAMAAgAAAAKAAAAAAANAAgAAAAKAAAAAAA=")
-tile_set = ExtResource("2_klco8")
+tile_set = ExtResource("2_mhph4")
 
-[node name="World" type="Node2D" parent="." unique_id=141628911]
+[node name="World" type="Node2D" parent="." unique_id=716637854]
 y_sort_enabled = true
 
-[node name="Obstacles" type="TileMapLayer" parent="World" unique_id=561285392]
+[node name="Obstacles" type="TileMapLayer" parent="World" unique_id=1672752910]
 y_sort_enabled = true
-tile_set = ExtResource("2_klco8")
+tile_set = ExtResource("2_mhph4")
 
-[node name="Counter" type="StaticBody2D" parent="World" unique_id=1052534301]
+[node name="Counter" type="StaticBody2D" parent="World" unique_id=760508169]
 position = Vector2(112, 78)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/Counter" unique_id=640525912]
-texture = ExtResource("3_bw7wb")
+[node name="Shadow" type="Sprite2D" parent="World/Counter" unique_id=447080787]
+position = Vector2(0, -1)
+scale = Vector2(0.9230769, 1)
+texture = ExtResource("3_h7rr4")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Counter" unique_id=869830387]
+texture = ExtResource("4_shkxf")
 offset = Vector2(0, -11)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Counter" unique_id=2081154897]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Counter" unique_id=1321472956]
 position = Vector2(0, -5)
-shape = SubResource("RectangleShape2D_h3nd6")
+shape = SubResource("RectangleShape2D_sr45a")
 
-[node name="Shelf" type="StaticBody2D" parent="World" unique_id=1833764426]
+[node name="Shelf" type="StaticBody2D" parent="World" unique_id=339481372]
 position = Vector2(36, 58)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/Shelf" unique_id=235661638]
-texture = ExtResource("4_7c5ph")
+[node name="Shadow" type="Sprite2D" parent="World/Shelf" unique_id=1828747768]
+position = Vector2(0, -1)
+texture = ExtResource("5_6irce")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Shelf" unique_id=1582011574]
+texture = ExtResource("6_4e6ml")
 offset = Vector2(0, -14)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Shelf" unique_id=1693922802]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Shelf" unique_id=1559866749]
 position = Vector2(0, -5)
-shape = SubResource("RectangleShape2D_uxbjs")
+shape = SubResource("RectangleShape2D_4q1of")
 
-[node name="Shelf2" type="StaticBody2D" parent="World" unique_id=1218398374]
+[node name="Shelf2" type="StaticBody2D" parent="World" unique_id=1628365949]
 position = Vector2(188, 58)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/Shelf2" unique_id=1205845186]
-texture = ExtResource("4_7c5ph")
+[node name="Shadow" type="Sprite2D" parent="World/Shelf2" unique_id=1345798413]
+position = Vector2(0, -1)
+texture = ExtResource("5_6irce")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Shelf2" unique_id=1963296405]
+texture = ExtResource("6_4e6ml")
 offset = Vector2(0, -14)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Shelf2" unique_id=2010140229]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Shelf2" unique_id=1084995134]
 position = Vector2(0, -5)
-shape = SubResource("RectangleShape2D_48ymn")
+shape = SubResource("RectangleShape2D_cmexy")
 
-[node name="Crate" type="StaticBody2D" parent="World" unique_id=861170235]
+[node name="Crate" type="StaticBody2D" parent="World" unique_id=76737366]
 position = Vector2(30, 120)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/Crate" unique_id=503935271]
-texture = ExtResource("5_mhph4")
+[node name="Shadow" type="Sprite2D" parent="World/Crate" unique_id=23434303]
+position = Vector2(0, -1)
+texture = ExtResource("7_gh2ma")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Crate" unique_id=2131859893]
+texture = ExtResource("8_f4wjt")
 offset = Vector2(0, -8)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Crate" unique_id=1633939431]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Crate" unique_id=576353311]
 position = Vector2(0, -5)
-shape = SubResource("RectangleShape2D_ygdr3")
+shape = SubResource("RectangleShape2D_bgfgc")
 
-[node name="Plant" type="StaticBody2D" parent="World" unique_id=303245818]
+[node name="Plant" type="StaticBody2D" parent="World" unique_id=1830733970]
 position = Vector2(196, 122)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/Plant" unique_id=1346930113]
-texture = ExtResource("6_h7rr4")
+[node name="Shadow" type="Sprite2D" parent="World/Plant" unique_id=1533034030]
+position = Vector2(0, -1)
+texture = ExtResource("7_gh2ma")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Plant" unique_id=631581206]
+texture = ExtResource("9_0vnak")
 offset = Vector2(0, -7)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Plant" unique_id=1148214538]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Plant" unique_id=649223167]
 position = Vector2(0, -3)
-shape = SubResource("RectangleShape2D_afepp")
+shape = SubResource("RectangleShape2D_13ic6")
 
-[node name="Shopkeeper" type="StaticBody2D" parent="World" unique_id=767323245 instance=ExtResource("7_shkxf")]
+[node name="Shopkeeper" type="StaticBody2D" parent="World" unique_id=1109711901 instance=ExtResource("10_tiexo")]
 position = Vector2(112, 56)
-script = ExtResource("8_6irce")
+script = ExtResource("11_a3ur4")
 npc_name = "잡화점 주인"
-texture = ExtResource("9_4e6ml")
+texture = ExtResource("12_oa77k")
 lines = Array[String](["어서 오게!"])
 story_id = "shopkeeper"
 
-[node name="Portal_shop_out" type="Area2D" parent="World" unique_id=1501766320 instance=ExtResource("10_gh2ma")]
+[node name="Portal_shop_out" type="Area2D" parent="World" unique_id=1212236953 instance=ExtResource("13_h3nd6")]
 position = Vector2(112, 136)
 collision_layer = 0
 collision_mask = 2
 monitorable = false
-script = ExtResource("11_f4wjt")
+script = ExtResource("14_uxbjs")
 portal_id = "shop_out"
 target_map = "res://scenes/maps/village.tscn"
 target_portal = "shop_door"
 spawn_offset = Vector2(0, -24)
 
-[node name="Player" type="CharacterBody2D" parent="World" unique_id=971867236 instance=ExtResource("12_0vnak")]
+[node name="Player" type="CharacterBody2D" parent="World" unique_id=1049987246 instance=ExtResource("15_48ymn")]
 position = Vector2(112, 110)
 collision_layer = 2
 motion_mode = 1
-script = ExtResource("13_tiexo")
+script = ExtResource("16_ygdr3")
 
-[node name="Spawns" type="Node2D" parent="." unique_id=1775305107]
+[node name="Spawns" type="Node2D" parent="." unique_id=1216829250]
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=595593227 groups=["hud"] instance=ExtResource("14_a3ur4")]
-script = ExtResource("15_oa77k")
+[node name="HUD" type="CanvasLayer" parent="." unique_id=2007931574 groups=["hud"] instance=ExtResource("17_afepp")]
+layer = 10
+script = ExtResource("18_qxjul")

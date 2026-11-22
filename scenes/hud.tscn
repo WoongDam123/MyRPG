@@ -16,6 +16,7 @@
 radius = 30.0
 
 [node name="HUD" type="CanvasLayer" groups=["hud"]]
+layer = 10
 script = ExtResource("3_hud")
 
 [node name="Joystick" type="VirtualJoystick" parent="."]

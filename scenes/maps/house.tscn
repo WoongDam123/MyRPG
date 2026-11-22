@@ -1,44 +1,47 @@
 [gd_scene format=4]
 
-[ext_resource type="Script" path="res://scripts/map.gd" id="1_dhgxl"]
-[ext_resource type="TileSet" path="res://assets/tiles/tileset.tres" id="2_jetpx"]
-[ext_resource type="Texture2D" path="res://assets/props/bed.png" id="3_74y64"]
-[ext_resource type="Texture2D" path="res://assets/props/table.png" id="4_htj62"]
-[ext_resource type="Texture2D" path="res://assets/props/shelf.png" id="5_w3uhw"]
-[ext_resource type="Texture2D" path="res://assets/props/stove.png" id="6_bcxfi"]
-[ext_resource type="Texture2D" path="res://assets/props/plant.png" id="7_ctqk0"]
-[ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="8_88ntq"]
-[ext_resource type="Script" path="res://scripts/npc.gd" id="9_dpbn4"]
-[ext_resource type="Texture2D" path="res://assets/npcs/mom.png" id="10_weraa"]
-[ext_resource type="PackedScene" path="res://scenes/portal.tscn" id="11_fl6un"]
-[ext_resource type="Script" path="res://scripts/portal.gd" id="12_ynomo"]
-[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="13_cm7ki"]
-[ext_resource type="Script" path="res://scripts/player.gd" id="14_v8edv"]
-[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="15_jku6t"]
-[ext_resource type="Script" path="res://scripts/hud.gd" id="16_glsxm"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7sb7"]
-size = Vector2(16, 22)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_02fig"]
-size = Vector2(32, 10)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_yrlld"]
-size = Vector2(20, 10)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jj058"]
-size = Vector2(24, 12)
+[ext_resource type="Script" path="res://scripts/map.gd" id="1_74y64"]
+[ext_resource type="TileSet" path="res://assets/tiles/tileset.tres" id="2_htj62"]
+[ext_resource type="Texture2D" path="res://assets/effects/shadow_m.png" id="3_w3uhw"]
+[ext_resource type="Texture2D" path="res://assets/props/bed.png" id="4_bcxfi"]
+[ext_resource type="Texture2D" path="res://assets/effects/shadow_l.png" id="5_ctqk0"]
+[ext_resource type="Texture2D" path="res://assets/props/table.png" id="6_88ntq"]
+[ext_resource type="Texture2D" path="res://assets/props/shelf.png" id="7_dpbn4"]
+[ext_resource type="Texture2D" path="res://assets/props/stove.png" id="8_weraa"]
+[ext_resource type="Texture2D" path="res://assets/props/plant.png" id="9_fl6un"]
+[ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="10_ynomo"]
+[ext_resource type="Script" path="res://scripts/npc.gd" id="11_cm7ki"]
+[ext_resource type="Texture2D" path="res://assets/npcs/mom.png" id="12_v8edv"]
+[ext_resource type="PackedScene" path="res://scenes/portal.tscn" id="13_jku6t"]
+[ext_resource type="Script" path="res://scripts/portal.gd" id="14_glsxm"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="15_q7sb7"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="16_02fig"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="17_yrlld"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="18_jj058"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbddx"]
-size = Vector2(10, 6)
+size = Vector2(16, 22)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cr1h8"]
+size = Vector2(32, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qi375"]
+size = Vector2(20, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fqjb3"]
+size = Vector2(24, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iypel"]
 size = Vector2(10, 6)
 
-[node name="Map" type="Node2D" unique_id=1385402935]
-script = ExtResource("1_dhgxl")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vrkge"]
+size = Vector2(10, 6)
+
+[node name="Map" type="Node2D" unique_id=1988131271]
+script = ExtResource("1_74y64")
 map_name = "우리 집"
 camera_zoom = 2.0
+fx_profile = "indoor"
 enter_event_flag = "intro_done"
 enter_event_lines = [{
 "name": "엄마",
@@ -54,113 +57,138 @@ enter_event_lines = [{
 "text": "(…이상한 꿈을 꾼 것 같다. 별이 가득한 곳에서, 누군가 나에게 말을 걸던…)"
 }]
 
-[node name="Ground" type="TileMapLayer" parent="." unique_id=1736782574]
+[node name="Ground" type="TileMapLayer" parent="." unique_id=674910151]
 tile_map_data = PackedByteArray("AAAAAAAAAAAKAAAAAAABAAAAAAAKAAAAAAACAAAAAAAKAAAAAAADAAAAAAAKAAAAAAAEAAAAAAAKAAAAAAAFAAAAAAAKAAAAAAAGAAAAAAAKAAAAAAAHAAAAAAAKAAAAAAAIAAAAAAAKAAAAAAAJAAAAAAAKAAAAAAAKAAAAAAAKAAAAAAALAAAAAAAKAAAAAAAMAAAAAAAKAAAAAAANAAAAAAAKAAAAAAAOAAAAAAAKAAAAAAAPAAAAAAAKAAAAAAAQAAAAAAAKAAAAAAARAAAAAAAKAAAAAAASAAAAAAAKAAAAAAATAAAAAAAKAAAAAAAAAAEAAAAKAAAAAAABAAEAAAALAAAAAAACAAEAAAALAAAAAAADAAEAAAALAAAAAAAEAAEAAAALAAAAAAAFAAEAAAALAAAAAAAGAAEAAAALAAAAAAAHAAEAAAALAAAAAAAIAAEAAAALAAAAAAAJAAEAAAALAAAAAAAKAAEAAAALAAAAAAALAAEAAAALAAAAAAAMAAEAAAALAAAAAAANAAEAAAALAAAAAAAOAAEAAAALAAAAAAAPAAEAAAALAAAAAAAQAAEAAAALAAAAAAARAAEAAAALAAAAAAASAAEAAAALAAAAAAATAAEAAAAKAAAAAAAAAAIAAAAKAAAAAAABAAIAAAALAAAAAAACAAIAAAALAAAAAAADAAIAAAALAAAAAAAEAAIAAAALAAAAAAAFAAIAAAALAAAAAAAGAAIAAAALAAAAAAAHAAIAAAALAAAAAAAIAAIAAAALAAAAAAAJAAIAAAALAAAAAAAKAAIAAAALAAAAAAALAAIAAAALAAAAAAAMAAIAAAALAAAAAAANAAIAAAALAAAAAAAOAAIAAAALAAAAAAAPAAIAAAALAAAAAAAQAAIAAAALAAAAAAARAAIAAAALAAAAAAASAAIAAAALAAAAAAATAAIAAAAKAAAAAAAAAAMAAAAKAAAAAAABAAMAAAAJAAAAAAACAAMAAAAJAAAAAAADAAMAAAAJAAAAAAAEAAMAAAAJAAAAAAAFAAMAAAAJAAAAAAAGAAMAAAAJAAAAAAAHAAMAAAAJAAAAAAAIAAMAAAAJAAAAAAAJAAMAAAAJAAAAAAAKAAMAAAAJAAAAAAALAAMAAAAJAAAAAAAMAAMAAAAJAAAAAAANAAMAAAAJAAAAAAAOAAMAAAAJAAAAAAAPAAMAAAAJAAAAAAAQAAMAAAAJAAAAAAARAAMAAAAJAAAAAAASAAMAAAAJAAAAAAATAAMAAAAKAAAAAAAAAAQAAAAKAAAAAAABAAQAAAAJAAAAAAACAAQAAAAJAAAAAAADAAQAAAAJAAAAAAAEAAQAAAAJAAAAAAAFAAQAAAAJAAAAAAAGAAQAAAAJAAAAAAAHAAQAAAAJAAAAAAAIAAQAAAAJAAAAAAAJAAQAAAAJAAAAAAAKAAQAAAAJAAAAAAALAAQAAAAJAAAAAAAMAAQAAAAJAAAAAAANAAQAAAAJAAAAAAAOAAQAAAAJAAAAAAAPAAQAAAAJAAAAAAAQAAQAAAAJAAAAAAARAAQAAAAJAAAAAAASAAQAAAAJAAAAAAATAAQAAAAKAAAAAAAAAAUAAAAKAAAAAAABAAUAAAAJAAAAAAACAAUAAAAJAAAAAAADAAUAAAAJAAAAAAAEAAUAAAAJAAAAAAAFAAUAAAAJAAAAAAAGAAUAAAAJAAAAAAAHAAUAAAAJAAAAAAAIAAUAAAAJAAAAAAAJAAUAAAAJAAAAAAAKAAUAAAAJAAAAAAALAAUAAAAJAAAAAAAMAAUAAAAJAAAAAAANAAUAAAAJAAAAAAAOAAUAAAAJAAAAAAAPAAUAAAAJAAAAAAAQAAUAAAAJAAAAAAARAAUAAAAJAAAAAAASAAUAAAAJAAAAAAATAAUAAAAKAAAAAAAAAAYAAAAKAAAAAAABAAYAAAAJAAAAAAACAAYAAAAJAAAAAAADAAYAAAAJAAAAAAAEAAYAAAAJAAAAAAAFAAYAAAAJAAAAAAAGAAYAAAAJAAAAAAAHAAYAAAAJAAAAAAAIAAYAAAAJAAAAAAAJAAYAAAAJAAAAAAAKAAYAAAAJAAAAAAALAAYAAAAJAAAAAAAMAAYAAAAJAAAAAAANAAYAAAAJAAAAAAAOAAYAAAAJAAAAAAAPAAYAAAAJAAAAAAAQAAYAAAAJAAAAAAARAAYAAAAJAAAAAAASAAYAAAAJAAAAAAATAAYAAAAKAAAAAAAAAAcAAAAKAAAAAAABAAcAAAAJAAAAAAACAAcAAAAJAAAAAAADAAcAAAAJAAAAAAAEAAcAAAAJAAAAAAAFAAcAAAAJAAAAAAAGAAcAAAAJAAAAAAAHAAcAAAAJAAAAAAAIAAcAAAAJAAAAAAAJAAcAAAAJAAAAAAAKAAcAAAAJAAAAAAALAAcAAAAJAAAAAAAMAAcAAAAJAAAAAAANAAcAAAAJAAAAAAAOAAcAAAAJAAAAAAAPAAcAAAAJAAAAAAAQAAcAAAAJAAAAAAARAAcAAAAJAAAAAAASAAcAAAAJAAAAAAATAAcAAAAKAAAAAAAAAAgAAAAKAAAAAAABAAgAAAAJAAAAAAACAAgAAAAJAAAAAAADAAgAAAAJAAAAAAAEAAgAAAAJAAAAAAAFAAgAAAAJAAAAAAAGAAgAAAAJAAAAAAAHAAgAAAAJAAAAAAAIAAgAAAAJAAAAAAAJAAgAAAAJAAAAAAAKAAgAAAAJAAAAAAALAAgAAAAJAAAAAAAMAAgAAAAJAAAAAAANAAgAAAAJAAAAAAAOAAgAAAAJAAAAAAAPAAgAAAAJAAAAAAAQAAgAAAAJAAAAAAARAAgAAAAJAAAAAAASAAgAAAAJAAAAAAATAAgAAAAKAAAAAAAAAAkAAAAKAAAAAAABAAkAAAAJAAAAAAACAAkAAAAJAAAAAAADAAkAAAAJAAAAAAAEAAkAAAAJAAAAAAAFAAkAAAAJAAAAAAAGAAkAAAAJAAAAAAAHAAkAAAAJAAAAAAAIAAkAAAAJAAAAAAAJAAkAAAAJAAAAAAAKAAkAAAAJAAAAAAALAAkAAAAJAAAAAAAMAAkAAAAJAAAAAAANAAkAAAAJAAAAAAAOAAkAAAAJAAAAAAAPAAkAAAAJAAAAAAAQAAkAAAAJAAAAAAARAAkAAAAJAAAAAAASAAkAAAAJAAAAAAATAAkAAAAKAAAAAAAAAAoAAAAKAAAAAAABAAoAAAAJAAAAAAACAAoAAAAJAAAAAAADAAoAAAAJAAAAAAAEAAoAAAAJAAAAAAAFAAoAAAAJAAAAAAAGAAoAAAAJAAAAAAAHAAoAAAAJAAAAAAAIAAoAAAAJAAAAAAAJAAoAAAAJAAAAAAAKAAoAAAAJAAAAAAALAAoAAAAJAAAAAAAMAAoAAAAJAAAAAAANAAoAAAAJAAAAAAAOAAoAAAAJAAAAAAAPAAoAAAAJAAAAAAAQAAoAAAAJAAAAAAARAAoAAAAJAAAAAAASAAoAAAAJAAAAAAATAAoAAAAKAAAAAAAAAAsAAAAKAAAAAAABAAsAAAAKAAAAAAACAAsAAAAKAAAAAAADAAsAAAAKAAAAAAAEAAsAAAAKAAAAAAAFAAsAAAAKAAAAAAAGAAsAAAAKAAAAAAAHAAsAAAAKAAAAAAAIAAsAAAAKAAAAAAAJAAsAAAAJAAAAAAAKAAsAAAAJAAAAAAALAAsAAAAKAAAAAAAMAAsAAAAKAAAAAAANAAsAAAAKAAAAAAAOAAsAAAAKAAAAAAAPAAsAAAAKAAAAAAAQAAsAAAAKAAAAAAARAAsAAAAKAAAAAAASAAsAAAAKAAAAAAATAAsAAAAKAAAAAAA=")
-tile_set = ExtResource("2_jetpx")
+tile_set = ExtResource("2_htj62")
 
-[node name="World" type="Node2D" parent="." unique_id=1467406909]
+[node name="World" type="Node2D" parent="." unique_id=2068591403]
 y_sort_enabled = true
 
-[node name="Obstacles" type="TileMapLayer" parent="World" unique_id=105016349]
+[node name="Obstacles" type="TileMapLayer" parent="World" unique_id=2088277917]
 y_sort_enabled = true
-tile_set = ExtResource("2_jetpx")
+tile_set = ExtResource("2_htj62")
 
-[node name="Bed" type="StaticBody2D" parent="World" unique_id=1443842607]
+[node name="Bed" type="StaticBody2D" parent="World" unique_id=604448981]
 position = Vector2(40, 76)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/Bed" unique_id=1460755233]
-texture = ExtResource("3_74y64")
+[node name="Shadow" type="Sprite2D" parent="World/Bed" unique_id=1012741032]
+position = Vector2(0, -1)
+texture = ExtResource("3_w3uhw")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Bed" unique_id=687712611]
+texture = ExtResource("4_bcxfi")
 offset = Vector2(0, -14)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Bed" unique_id=743353902]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Bed" unique_id=1977159808]
 position = Vector2(0, -11)
-shape = SubResource("RectangleShape2D_q7sb7")
-
-[node name="Table" type="StaticBody2D" parent="World" unique_id=935463742]
-position = Vector2(160, 124)
-
-[node name="Sprite2D" type="Sprite2D" parent="World/Table" unique_id=875468637]
-texture = ExtResource("4_htj62")
-offset = Vector2(0, -10)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Table" unique_id=2004837811]
-position = Vector2(0, -5)
-shape = SubResource("RectangleShape2D_02fig")
-
-[node name="Shelf" type="StaticBody2D" parent="World" unique_id=1361457902]
-position = Vector2(232, 70)
-
-[node name="Sprite2D" type="Sprite2D" parent="World/Shelf" unique_id=879407343]
-texture = ExtResource("5_w3uhw")
-offset = Vector2(0, -14)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Shelf" unique_id=503240904]
-position = Vector2(0, -5)
-shape = SubResource("RectangleShape2D_yrlld")
-
-[node name="Stove" type="StaticBody2D" parent="World" unique_id=1301514893]
-position = Vector2(288, 70)
-
-[node name="Sprite2D" type="Sprite2D" parent="World/Stove" unique_id=576992000]
-texture = ExtResource("6_bcxfi")
-offset = Vector2(0, -14)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Stove" unique_id=1254082829]
-position = Vector2(0, -6)
-shape = SubResource("RectangleShape2D_jj058")
-
-[node name="Plant" type="StaticBody2D" parent="World" unique_id=839910710]
-position = Vector2(24, 172)
-
-[node name="Sprite2D" type="Sprite2D" parent="World/Plant" unique_id=481545935]
-texture = ExtResource("7_ctqk0")
-offset = Vector2(0, -7)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Plant" unique_id=1666791713]
-position = Vector2(0, -3)
 shape = SubResource("RectangleShape2D_qbddx")
 
-[node name="Plant2" type="StaticBody2D" parent="World" unique_id=757614145]
-position = Vector2(296, 172)
+[node name="Table" type="StaticBody2D" parent="World" unique_id=1224483888]
+position = Vector2(160, 124)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/Plant2" unique_id=1950019086]
-texture = ExtResource("7_ctqk0")
-offset = Vector2(0, -7)
+[node name="Shadow" type="Sprite2D" parent="World/Table" unique_id=302157269]
+position = Vector2(0, -1)
+texture = ExtResource("5_ctqk0")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Plant2" unique_id=880812255]
-position = Vector2(0, -3)
+[node name="Sprite2D" type="Sprite2D" parent="World/Table" unique_id=1853526339]
+texture = ExtResource("6_88ntq")
+offset = Vector2(0, -10)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Table" unique_id=1835082697]
+position = Vector2(0, -5)
 shape = SubResource("RectangleShape2D_cr1h8")
 
-[node name="Mom" type="StaticBody2D" parent="World" unique_id=1898538179 instance=ExtResource("8_88ntq")]
+[node name="Shelf" type="StaticBody2D" parent="World" unique_id=1948485824]
+position = Vector2(232, 70)
+
+[node name="Shadow" type="Sprite2D" parent="World/Shelf" unique_id=2132957864]
+position = Vector2(0, -1)
+texture = ExtResource("5_ctqk0")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Shelf" unique_id=899636151]
+texture = ExtResource("7_dpbn4")
+offset = Vector2(0, -14)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Shelf" unique_id=1376693316]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_qi375")
+
+[node name="Stove" type="StaticBody2D" parent="World" unique_id=443817978]
+position = Vector2(288, 70)
+
+[node name="Shadow" type="Sprite2D" parent="World/Stove" unique_id=2079659932]
+position = Vector2(0, -1)
+texture = ExtResource("5_ctqk0")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Stove" unique_id=515392117]
+texture = ExtResource("8_weraa")
+offset = Vector2(0, -14)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Stove" unique_id=1373813479]
+position = Vector2(0, -6)
+shape = SubResource("RectangleShape2D_fqjb3")
+
+[node name="Plant" type="StaticBody2D" parent="World" unique_id=1176503476]
+position = Vector2(24, 172)
+
+[node name="Shadow" type="Sprite2D" parent="World/Plant" unique_id=1214141341]
+position = Vector2(0, -1)
+texture = ExtResource("3_w3uhw")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Plant" unique_id=1091885641]
+texture = ExtResource("9_fl6un")
+offset = Vector2(0, -7)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Plant" unique_id=49323204]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_iypel")
+
+[node name="Plant2" type="StaticBody2D" parent="World" unique_id=1693041950]
+position = Vector2(296, 172)
+
+[node name="Shadow" type="Sprite2D" parent="World/Plant2" unique_id=418940147]
+position = Vector2(0, -1)
+texture = ExtResource("3_w3uhw")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Plant2" unique_id=1872397051]
+texture = ExtResource("9_fl6un")
+offset = Vector2(0, -7)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Plant2" unique_id=829991936]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_vrkge")
+
+[node name="Mom" type="StaticBody2D" parent="World" unique_id=247925301 instance=ExtResource("10_ynomo")]
 position = Vector2(266, 92)
-script = ExtResource("9_dpbn4")
+script = ExtResource("11_cm7ki")
 npc_name = "엄마"
-texture = ExtResource("10_weraa")
+texture = ExtResource("12_v8edv")
 lines = Array[String](["아빠는 집 앞 밭에 계셔. 문 앞의 빛나는 곳으로 나가면 된단다.", "내일이면 성인식이라니… 엄마는 아직도 네가 아기 같은데."])
 facing = "right"
 story_id = "mom"
 
-[node name="Portal_house_door" type="Area2D" parent="World" unique_id=26121011 instance=ExtResource("11_fl6un")]
+[node name="Portal_house_door" type="Area2D" parent="World" unique_id=331880554 instance=ExtResource("13_jku6t")]
 position = Vector2(160, 186)
 collision_layer = 0
 collision_mask = 2
 monitorable = false
-script = ExtResource("12_ynomo")
+script = ExtResource("14_glsxm")
 portal_id = "house_door"
 target_map = "res://scenes/maps/village.tscn"
 target_portal = "home_door"
 spawn_offset = Vector2(0, -24)
 
-[node name="Player" type="CharacterBody2D" parent="World" unique_id=793298324 instance=ExtResource("13_cm7ki")]
+[node name="Player" type="CharacterBody2D" parent="World" unique_id=378130375 instance=ExtResource("15_q7sb7")]
 position = Vector2(40, 92)
 collision_layer = 2
 motion_mode = 1
-script = ExtResource("14_v8edv")
+script = ExtResource("16_02fig")
 
-[node name="Spawns" type="Node2D" parent="." unique_id=673252549]
+[node name="Spawns" type="Node2D" parent="." unique_id=1004365705]
 
-[node name="bed" type="Marker2D" parent="Spawns" unique_id=139044025 groups=["spawn_points"]]
+[node name="bed" type="Marker2D" parent="Spawns" unique_id=1324794956 groups=["spawn_points"]]
 position = Vector2(40, 92)
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=998338995 groups=["hud"] instance=ExtResource("15_jku6t")]
-script = ExtResource("16_glsxm")
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1197447028 groups=["hud"] instance=ExtResource("17_yrlld")]
+layer = 10
+script = ExtResource("18_jj058")

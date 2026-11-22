@@ -42,6 +42,7 @@ var selected: String = ""
 
 
 func _ready() -> void:
+	PostFX.apply("off")
 	choice_panel.hide()
 	confirm_button.disabled = true
 	confirm_button.pressed.connect(_on_confirm)

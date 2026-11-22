@@ -120,6 +120,9 @@ var quickslot: String = ""  ## 퀵슬롯에 등록한 소모품 id
 # --- 맵 이동 ---
 var next_spawn: String = ""  ## 다음 맵에서 플레이어가 나타날 위치 이름 (포탈 id 또는 Spawns의 Marker2D 이름)
 
+# --- 그래픽 ---
+var fx_enabled: bool = true  ## 2.5D 화면 효과 (틸트시프트·빛·입자)
+
 # --- 자동 기능 ---
 var auto_hunt: bool = false  ## 자동 사냥 켜짐
 var auto_move: bool = false  ## 퀘스트 자동 이동 중 (맵을 넘어가도 이어짐)

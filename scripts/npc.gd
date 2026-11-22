@@ -1,6 +1,6 @@
 extends StaticBody2D
 ## 마을 사람(NPC): 가까이 가서 공격 버튼(Space/J)을 누르면 대화한다.
-## 그림은 4칸(아래·왼쪽·오른쪽·위) 가로 한 줄 이미지.
+## 그림은 32x32 칸: 줄 = 아래·왼쪽·오른쪽·위, 칸 0-1 = 숨쉬기(대기)
 
 @export var npc_name: String = "마을 사람"
 @export var texture: Texture2D
@@ -8,7 +8,10 @@ extends StaticBody2D
 @export_enum("down", "left", "right", "up") var facing: String = "down"
 @export var story_id: String = ""  ## 비어 있지 않으면 Story가 상황에 맞는 대사를 정한다 (lines 대신)
 
-const FRAME := {"down": 0, "left": 1, "right": 2, "up": 3}
+const FRAME := {"down": 0, "left": 9, "right": 18, "up": 27}  ## 각 방향 줄의 첫 칸
+
+var _look: String = "down"
+var _breath: float = randf() * 2.0
 
 var _player: Node2D
 @onready var sprite: Sprite2D = $Sprite2D
@@ -18,25 +21,28 @@ var _player: Node2D
 func _ready() -> void:
 	add_to_group("interactable")
 	sprite.texture = texture
-	sprite.frame = FRAME[facing]
+	_look = facing
+	sprite.frame = FRAME[_look]
 	_player = get_tree().get_first_node_in_group("player")
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_breath += delta
+	sprite.frame = FRAME[_look] + (int(_breath / 0.55) % 2)  # 숨쉬기
 	# 플레이어가 가까이 오면 말풍선 표시
 	var near := _player != null and global_position.distance_to(_player.global_position) < 30.0
 	bubble.visible = near
 	if near:
-		bubble.position.y = -34.0 + sin(Time.get_ticks_msec() / 200.0) * 1.5
+		bubble.position.y = -40.0 + sin(Time.get_ticks_msec() / 200.0) * 1.5
 
 
 func interact(player: Node2D) -> void:
 	# 플레이어 쪽을 바라본다
 	var d := player.global_position - global_position
 	if absf(d.x) > absf(d.y):
-		sprite.frame = FRAME["right"] if d.x > 0 else FRAME["left"]
+		_look = "right" if d.x > 0 else "left"
 	else:
-		sprite.frame = FRAME["down"] if d.y > 0 else FRAME["up"]
+		_look = "down" if d.y > 0 else "up"
 	player.set_controls(false)
 	var dialogue = get_tree().get_first_node_in_group("dialogue_box")
 	var texts: Array = Story.get_lines(story_id) if story_id != "" else Array(lines)
@@ -46,5 +52,5 @@ func interact(player: Node2D) -> void:
 	await dialogue.play(script_lines)
 	if story_id != "":
 		Story.after_talk(story_id)
-	sprite.frame = FRAME[facing]
+	_look = facing
 	player.set_controls(true)

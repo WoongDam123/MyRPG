@@ -20,10 +20,10 @@ is_boss = true
 dash_interval = 3.2
 dash_speed = 170.0
 
-[node name="AnimatedSprite2D" parent="." index="0"]
-position = Vector2(0, -12)
+[node name="AnimatedSprite2D" parent="." index="1"]
+position = Vector2(0, -17)
 sprite_frames = ExtResource("2_frames")
 
-[node name="CollisionShape2D" parent="." index="1"]
+[node name="CollisionShape2D" parent="." index="2"]
 position = Vector2(0, -5)
 shape = SubResource("RectangleShape2D_body")
